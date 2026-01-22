@@ -10,12 +10,17 @@ public:
     void run();
 
 private:
+    Board& board;
+    sf::RenderWindow window;
+    int tileSize = 80; 
+
+    int selectedSquare = -1;
+    uint64_t highlightedMoves = 0ULL;
+
     void draw_board();
     void draw_pieces();
-
-    Board& board;
-    int tileSize = 80;          
-    sf::RenderWindow window;
+    void draw_highlights();
+    int mouse_to_square(int x, int y);
 };
 
 

@@ -54,7 +54,7 @@ inline void init_knight_attacks() {
     }
 }
 
-uint64_t rook_attacks(int sq, uint64_t occupied) {
+inline uint64_t rook_attacks(int sq, uint64_t occupied) {
     uint64_t attacks = 0ULL;
     int rank = sq / 8;
     int file = sq % 8;
@@ -92,7 +92,7 @@ uint64_t rook_attacks(int sq, uint64_t occupied) {
     return attacks;
 }
 
-uint64_t bishop_attacks(int sq, uint64_t occupied) {
+inline uint64_t bishop_attacks(int sq, uint64_t occupied) {
     uint64_t attacks = 0ULL;
     int rank = sq / 8;
     int file = sq % 8;
@@ -128,7 +128,7 @@ uint64_t bishop_attacks(int sq, uint64_t occupied) {
     return attacks;
 }
 
-uint64_t queen_attacks(int sq, uint64_t occupied) {
+inline uint64_t queen_attacks(int sq, uint64_t occupied) {
     return rook_attacks(sq, occupied) | bishop_attacks(sq, occupied);
 }
 
