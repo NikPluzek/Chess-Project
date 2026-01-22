@@ -17,6 +17,9 @@ private:
     int selectedSquare = -1;
     uint64_t highlightedMoves = 0ULL;
 
+    bool pieceSelected = false;
+    Piece selectedPiece = EMPTY;
+
     void draw_board();
     void draw_pieces();
     void draw_highlights();

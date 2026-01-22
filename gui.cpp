@@ -24,26 +24,42 @@ void ChessGUI::run() {
                 event.mouseButton.button == sf::Mouse::Left) {
 
                 int sq = mouse_to_square(event.mouseButton.x,
-                                         event.mouseButton.y);
+                                        event.mouseButton.y);
 
-                if (sq != -1) {
-                    Piece p = board.piece_at(sq);
+                if (sq == -1) return;
 
+                Piece p = board.piece_at(sq);
+
+                // --- SELECT PIECE ---
+                if (!pieceSelected) {
                     if (p != EMPTY) {
                         selectedSquare = sq;
+                        selectedPiece = p;
+                        pieceSelected = true;
 
-                        // TEMP: knight only
-                        if (p == BN || p == WN) {
+                        // highlight moves
+                        if (p == BN || p == WN)
                             highlightedMoves = knight_attacks[sq];
-                        } else {
+                        else
                             highlightedMoves = 0ULL;
-                        }
-                    } else {
-                        selectedSquare = -1;
-                        highlightedMoves = 0ULL;
                     }
                 }
+                // --- MOVE PIECE ---
+                else {
+                    // only allow move if square is legal
+                    if (highlightedMoves & (1ULL << sq)) {
+                        board.remove_piece(selectedSquare);
+                        board.set_piece(selectedPiece, sq);
+                    }
+
+                    // reset state
+                    pieceSelected = false;
+                    selectedSquare = -1;
+                    selectedPiece = EMPTY;
+                    highlightedMoves = 0ULL;
+                }
             }
+
         }
 
         // Draw
@@ -113,10 +129,8 @@ int ChessGUI::mouse_to_square(int mouseX, int mouseY) {
 }
 
 void ChessGUI::draw_highlights() {
-    sf::RectangleShape highlight(
-        sf::Vector2f(tileSize, tileSize)
-    );
-    highlight.setFillColor(sf::Color(0, 0, 255, 100));
+    sf::CircleShape highlight(tileSize / 2 - 20);
+    highlight.setFillColor(sf::Color(100, 100, 200, 100));
 
     for (int sq = 0; sq < 64; sq++) {
         if (highlightedMoves & (1ULL << sq)) {
@@ -124,8 +138,8 @@ void ChessGUI::draw_highlights() {
             int file = sq % 8;
 
             highlight.setPosition(
-                file * tileSize,
-                (7 - rank) * tileSize
+                file * tileSize + 20,
+                (7 - rank) * tileSize + 20
             );
 
             window.draw(highlight);
