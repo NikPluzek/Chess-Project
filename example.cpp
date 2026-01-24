@@ -1,70 +1,62 @@
-#include "gui.h"
+
 #include "bitboard.h"
 #include "board.h"
+#include "gui.h"
 
-ChessGUI::ChessGUI(Board& b) : board(b)
+ChessGUI::ChessGUI(Board& b)
+    : board(b), window(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess",
+                       sf::Style::Titlebar | sf::Style::Close)
 {
-    window.create(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess", sf::Style::Default);
-    window.setVisible(true);
-    window.setPosition(sf::Vector2i(200, 200));
     window.setFramerateLimit(60);
 }
 
 void ChessGUI::run()
 {
-    sf::Event event; // sfml variable that stores most recent user interaction
+    std::cout << "GUI started\n";
+    sf::Event event;
 
     while (window.isOpen())
     {
-
-        
-        while (window.pollEvent(event)) // loop to process user event/interaction, if no event, skip
+        // Handle events
+        while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                window.close(); // close window if user clicks the 'X' button
+            {
+                window.close();
+            }
 
             if (event.type == sf::Event::MouseButtonPressed &&
-                event.mouseButton.button == sf::Mouse::Left) // checks for left mouse button press
+                event.mouseButton.button == sf::Mouse::Left)
             {
 
-                int sq = mouse_to_square(event.mouseButton.x, event.mouseButton.y); // convert mouse coords to square index
+                int sq = mouse_to_square(event.mouseButton.x, event.mouseButton.y);
 
-                if (sq == -1)
-                    continue; // click was outside the board
-
-                Piece p = board.piece_at(sq); // get piece at clicked square
-
-                // --- SELECT PIECE --- (first click)
-                if (!pieceSelected) // checks for first piece selection
+                if (sq != -1)
                 {
+                    Piece p = board.piece_at(sq);
+
                     if (p != EMPTY)
                     {
                         selectedSquare = sq;
-                        selectedPiece = p;    // assigns piece type
-                        pieceSelected = true; // updates state
 
-                        // highlight moves
-                        if (p == BN || p == WN) // knight moves
-                            highlightedMoves = knight_attacks[sq];
+                        // TEMP: knight moves only
+                        if (p == BN || p == WN)
+                        {
+                            if (sq >= 0 && sq < 64)
+                            {
+                                highlightedMoves = knight_attacks[sq];
+                            }
+                        }
                         else
+                        {
                             highlightedMoves = 0ULL;
+                        }
                     }
-                }
-                // --- MOVE PIECE --- (second click)
-                else // once piece is selected, wait for destination square from the second click
-                {
-                    // only allow move if square is legal
-                    if (highlightedMoves & (1ULL << sq)) //highlightedMoves contains the legal moves for the selected piece
+                    else
                     {
-                        board.remove_piece(selectedSquare);
-                        board.set_piece(selectedPiece, sq);
+                        selectedSquare = -1;
+                        highlightedMoves = 0ULL;
                     }
-
-                    // reset state
-                    pieceSelected = false;
-                    selectedSquare = -1;
-                    selectedPiece = EMPTY;
-                    highlightedMoves = 0ULL;
                 }
             }
         }
@@ -72,10 +64,12 @@ void ChessGUI::run()
         // Draw
         window.clear(sf::Color::White);
         draw_board();
-        draw_highlights(); // you can enable this now
         draw_pieces();
         window.display();
+
+        // Framerate is already limited to 60fps by setFramerateLimit
     }
+    std::cout << "GUI closed\n";
 }
 
 void ChessGUI::draw_board()
@@ -116,11 +110,9 @@ void ChessGUI::draw_pieces()
         int file = sq % 8;
 
         piece.setPosition(file * tileSize + 10, (7 - rank) * tileSize + 10);
-
         window.draw(piece);
     }
 }
-
 int ChessGUI::mouse_to_square(int mouseX, int mouseY)
 {
     int file = mouseX / tileSize;
@@ -134,8 +126,8 @@ int ChessGUI::mouse_to_square(int mouseX, int mouseY)
 
 void ChessGUI::draw_highlights()
 {
-    sf::CircleShape highlight(tileSize / 2 - 20);
-    highlight.setFillColor(sf::Color(100, 100, 200, 100));
+    sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
+    highlight.setFillColor(sf::Color(0, 0, 255, 100));
 
     for (int sq = 0; sq < 64; sq++)
     {
@@ -144,7 +136,7 @@ void ChessGUI::draw_highlights()
             int rank = sq / 8;
             int file = sq % 8;
 
-            highlight.setPosition(file * tileSize + 20, (7 - rank) * tileSize + 20);
+            highlight.setPosition(file * tileSize, (7 - rank) * tileSize);
 
             window.draw(highlight);
         }
