@@ -1,18 +1,19 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <SFML/Graphics.hpp>
 #include "board.h"
+#include <SFML/Graphics.hpp>
 
-class ChessGUI {
-public:
+class ChessGUI
+{
+  public:
     ChessGUI(Board& board);
     void run();
 
-private:
+  private:
     Board& board;
     sf::RenderWindow window;
-    int tileSize = 80; 
+    int tileSize = 80;
 
     int selectedSquare = -1;
     uint64_t highlightedMoves = 0ULL;
@@ -25,6 +26,5 @@ private:
     void draw_highlights();
     int mouse_to_square(int x, int y);
 };
-
 
 #endif

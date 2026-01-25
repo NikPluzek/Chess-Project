@@ -10,15 +10,12 @@ ChessGUI::ChessGUI(Board& b) : board(b)
     window.setFramerateLimit(60);
 }
 
-
 void ChessGUI::run()
 {
     sf::Event event; // sfml variable that stores most recent user interaction
 
     while (window.isOpen())
     {
-
-        
         while (window.pollEvent(event)) // loop to process user event/interaction, if no event, skip
         {
             if (event.type == sf::Event::Closed)
@@ -28,7 +25,9 @@ void ChessGUI::run()
                 event.mouseButton.button == sf::Mouse::Left) // checks for left mouse button press
             {
 
-                int sq = mouse_to_square(event.mouseButton.x, event.mouseButton.y); // convert mouse coords to square index
+                int sq =
+                    mouse_to_square(event.mouseButton.x,
+                                    event.mouseButton.y); // convert mouse coords to square index
 
                 if (sq == -1)
                     continue; // click was outside the board
@@ -50,13 +49,13 @@ void ChessGUI::run()
 
                         else if (p == BR || p == WR) // rook moves
                             highlightedMoves = rook_attacks(sq, board.occupied);
-                        
+
                         else if (p == BB || p == WB) // bishop moves
                             highlightedMoves = bishop_attacks(sq, board.occupied);
 
                         else if (p == BQ || p == WQ) // queen moves
                             highlightedMoves = queen_attacks(sq, board.occupied);
-                        
+
                         else if (p == BK || p == WK)
                             highlightedMoves = king_attacks[sq];
 
@@ -68,7 +67,9 @@ void ChessGUI::run()
                 else // once piece is selected, wait for destination square from the second click
                 {
                     // only allow move if square is legal
-                    if (highlightedMoves & (1ULL << sq)) //highlightedMoves contains the legal moves for the selected piece
+                    if (highlightedMoves &
+                        (1ULL
+                         << sq)) // highlightedMoves contains the legal moves for the selected piece
                     {
                         board.remove_piece(selectedSquare);
                         board.set_piece(selectedPiece, sq);
@@ -121,7 +122,8 @@ void ChessGUI::draw_pieces()
             continue;
 
         // defining piece colour
-        if (p >= WP && p <= WK) {
+        if (p >= WP && p <= WK)
+        {
             piece.setFillColor(sf::Color::White);
             piece.setOutlineThickness(3.f);
             piece.setOutlineColor(sf::Color::Black);

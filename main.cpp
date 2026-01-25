@@ -2,7 +2,8 @@
 #include "board.h"
 #include "gui.h"
 
-int main() {
+int main()
+{
     init_knight_attacks();
     init_king_attacks();
 

@@ -1,19 +1,21 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <cstdint>
 #include <array>
+#include <cstdint>
 
-enum Piece {
+enum Piece
+{
     EMPTY = 0,
     WP, WN, WB, WR, WQ, WK,
     BP, BN, BB, BR, BQ, BK
 };
 
-class Board {
-public:
+class Board
+{
+  public:
     // Individual bitboards
-    uint64_t pieces[13];   // WP..BK
+    uint64_t pieces[13]; // WP..BK
     uint64_t white_pieces;
     uint64_t black_pieces;
     uint64_t occupied;
