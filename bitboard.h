@@ -132,6 +132,32 @@ inline uint64_t queen_attacks(int sq, uint64_t occupied) {
     return rook_attacks(sq, occupied) | bishop_attacks(sq, occupied);
 }
 
+inline uint64_t king_attacks[64];
+
+inline void init_king_attacks() {
+    for (int sq = 0; sq < 64; sq++) {
+        uint64_t attacks = 0ULL;
+        int rank = sq / 8;
+        int file = sq % 8;
+
+        // All possible king moves
+        int moves[8][2] = {
+            {1, 1}, {1, 0}, {1, -1},   //above
+            {0, -1}, {0, 1},           //adjacent
+            {-1, -1}, {-1, 0}, {-1, 1} //below
+        };
+
+        for (auto &m : moves) {
+            int r = rank + m[0];
+            int f = file + m[1];
+            if (r >= 0 && r < 8 && f >= 0 && f < 8)
+                attacks |= set_bit(square_index(r, f));
+        }
+
+        king_attacks[sq] = attacks;
+    }
+}
+
 #endif
 
 

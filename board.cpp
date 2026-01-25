@@ -5,7 +5,7 @@ Board::Board() {
 }
 
 void Board::clear() {
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i <= 12; i++)
         pieces[i] = 0ULL;
 
     white_pieces = 0ULL;

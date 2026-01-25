@@ -10,6 +10,7 @@ ChessGUI::ChessGUI(Board& b) : board(b)
     window.setFramerateLimit(60);
 }
 
+
 void ChessGUI::run()
 {
     sf::Event event; // sfml variable that stores most recent user interaction
@@ -49,6 +50,15 @@ void ChessGUI::run()
 
                         else if (p == BR || p == WR) // rook moves
                             highlightedMoves = rook_attacks(sq, board.occupied);
+                        
+                        else if (p == BB || p == WB) // bishop moves
+                            highlightedMoves = bishop_attacks(sq, board.occupied);
+
+                        else if (p == BQ || p == WQ) // queen moves
+                            highlightedMoves = queen_attacks(sq, board.occupied);
+                        
+                        else if (p == BK || p == WK)
+                            highlightedMoves = king_attacks[sq];
 
                         else
                             highlightedMoves = 0ULL;
@@ -111,8 +121,11 @@ void ChessGUI::draw_pieces()
             continue;
 
         // defining piece colour
-        if (p >= WP && p <= WK)
+        if (p >= WP && p <= WK) {
             piece.setFillColor(sf::Color::White);
+            piece.setOutlineThickness(3.f);
+            piece.setOutlineColor(sf::Color::Black);
+        }
         else
             piece.setFillColor(sf::Color::Black);
 
