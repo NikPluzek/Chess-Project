@@ -46,6 +46,10 @@ void ChessGUI::run()
                         // highlight moves
                         if (p == BN || p == WN) // knight moves
                             highlightedMoves = knight_attacks[sq];
+
+                        else if (p == BR || p == WR) // rook moves
+                            highlightedMoves = rook_attacks(sq, board.occupied);
+
                         else
                             highlightedMoves = 0ULL;
                     }
