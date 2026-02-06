@@ -10,6 +10,7 @@ void Board::clear()
     white_pieces = 0ULL;
     black_pieces = 0ULL;
     occupied = 0ULL;
+    white_to_move = true;
 }
 
 void Board::update_occupancy()

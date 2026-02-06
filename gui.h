@@ -17,6 +17,8 @@ class ChessGUI
 
     int selectedSquare = -1;
     uint64_t highlightedMoves = 0ULL;
+    uint64_t highlightedAttacks = 0ULL;
+    uint64_t legalMoves = 0ULL;
 
     bool pieceSelected = false;
     Piece selectedPiece = EMPTY;

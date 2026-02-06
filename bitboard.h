@@ -179,4 +179,96 @@ inline void init_king_attacks()
     }
 }
 
+// diagonal pawn attacks
+inline uint64_t pawn_attacks(int sq, bool is_white)
+{
+    uint64_t attacks = 0ULL;
+    int rank = sq / 8;
+    int file = sq % 8;
+
+    if (is_white)
+    {
+        // white pawns capture upwards
+        if (rank < 7)
+        {
+            if (file > 0)
+                attacks |= set_bit(square_index(rank + 1, file - 1)); // left attack
+            if (file < 7)
+                attacks |= set_bit(square_index(rank + 1, file + 1)); // right attack
+        }
+    }
+    else
+    {
+        // black pawns capture downwards
+        if (rank > 0)
+        {
+            if (file > 0)
+                attacks |= set_bit(square_index(rank - 1, file - 1)); // left attack
+            if (file < 7)
+                attacks |= set_bit(square_index(rank - 1, file + 1)); // right attack
+        }
+    }
+    return attacks;
+}
+
+// pawn moves
+inline uint64_t pawn_moves(int sq, bool is_white, uint64_t occupied, uint64_t enemy_pieces)
+{
+    uint64_t moves = 0ULL;
+    int rank = sq / 8;
+    int file = sq % 8;
+
+    if (is_white)
+    {
+        // single forward for white pawns
+        if (rank < 7)
+        {
+            int forward_sq = square_index(rank + 1, file);
+            if (!(occupied & set_bit(forward_sq)))
+            // union between all occupied squares and the forward square
+            {
+                moves |= set_bit(forward_sq);
+                // double forward if on starting rank for white pawns
+                if (rank == 1)
+                {
+                    int double_sq = square_index(rank + 2, file);
+                    if (!(occupied & set_bit(double_sq)))
+                    {
+                        moves |= set_bit(double_sq);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        // single forward for black pawns
+        if (rank > 0)
+        {
+            int forward_sq = square_index(rank - 1, file);
+            if (rank > 0 && !(occupied & set_bit(forward_sq)))
+            {
+                moves |= set_bit(forward_sq);
+                // double forward if on starting rank for black pawns
+                if (rank == 6)
+                {
+                    int double_sq = square_index(rank - 2, file);
+                    if (!(occupied & set_bit(double_sq)))
+                    {
+                        moves |= set_bit(double_sq);
+                    }
+                }
+            }
+        }
+    }
+
+    // Add captures (diagonal attacks, but only if enemy piece is there)
+    uint64_t attacks = pawn_attacks(sq, is_white);
+    // For full accuracy, you'd check if the target square has an enemy piece.
+    // For now, include all diagonal squares as potential moves (refine later).
+    moves |= (attacks & enemy_pieces);
+
+    return moves;
+}
+
 #endif

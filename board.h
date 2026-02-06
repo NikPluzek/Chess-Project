@@ -29,6 +29,7 @@ class Board
     Piece piece_at(int sq) const;
     void set_piece(Piece p, int sq);
     void remove_piece(int sq);
+    bool white_to_move;
 };
 
 #endif

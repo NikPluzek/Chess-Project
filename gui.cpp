@@ -39,9 +39,22 @@ void ChessGUI::run()
                 {
                     if (p != EMPTY)
                     {
+                        // turn based system validation
+                        if ((board.white_to_move && p >= BP) ||
+                            (!board.white_to_move && p <= WK))
+                        {
+                            continue; // wrong colour piece
+                        }
+
+
                         selectedSquare = sq;
                         selectedPiece = p;    // assigns piece type
                         pieceSelected = true; // updates state
+
+                        uint64_t friendly =
+                            (p >= WP && p <= WK) ? board.white_pieces : board.black_pieces;
+                        uint64_t enemy = 
+                            (p >= WP && p <= WK) ? board.black_pieces : board.white_pieces;
 
                         // highlight moves
                         if (p == BN || p == WN) // knight moves
@@ -58,21 +71,31 @@ void ChessGUI::run()
 
                         else if (p == BK || p == WK)
                             highlightedMoves = king_attacks[sq];
+                        
+                        else if (p == BP || p == WP)
+                            highlightedMoves = pawn_moves(sq, p == WP, board.occupied, (p == WP ? board.black_pieces : board.white_pieces));
 
                         else
                             highlightedMoves = 0ULL;
+                        
+                        highlightedAttacks = highlightedMoves & enemy;
+                        highlightedMoves &= ~friendly;
+                        highlightedMoves &= ~enemy;
+                        legalMoves = highlightedMoves | highlightedAttacks;
                     }
+                    
                 }
                 // --- MOVE PIECE --- (second click)
                 else // once piece is selected, wait for destination square from the second click
                 {
                     // only allow move if square is legal
-                    if (highlightedMoves &
-                        (1ULL
-                         << sq)) // highlightedMoves contains the legal moves for the selected piece
+                    if (legalMoves & (1ULL << sq)) // highlightedMoves contains the legal moves for the selected piece
                     {
-                        board.remove_piece(selectedSquare);
-                        board.set_piece(selectedPiece, sq);
+                        board.remove_piece(sq); // remove enemy piece
+                        board.remove_piece(selectedSquare); // remove piece from original square
+                        board.set_piece(selectedPiece, sq); // place piece on new square
+
+                        board.white_to_move = !board.white_to_move; // alternating turns
                     }
 
                     // reset state
@@ -80,6 +103,8 @@ void ChessGUI::run()
                     selectedSquare = -1;
                     selectedPiece = EMPTY;
                     highlightedMoves = 0ULL;
+                    highlightedAttacks = 0ULL;
+                    legalMoves = 0ULL;
                 }
             }
         }
@@ -153,6 +178,7 @@ int ChessGUI::mouse_to_square(int mouseX, int mouseY)
 
 void ChessGUI::draw_highlights()
 {
+    // grey circles for moves
     sf::CircleShape highlight(tileSize / 2 - 20);
     highlight.setFillColor(sf::Color(100, 100, 200, 100));
 
@@ -166,6 +192,22 @@ void ChessGUI::draw_highlights()
             highlight.setPosition(file * tileSize + 20, (7 - rank) * tileSize + 20);
 
             window.draw(highlight);
+        }
+    }
+
+    // red squares for attacks
+    sf::RectangleShape attackHighlight(sf::Vector2f(tileSize, tileSize));
+    attackHighlight.setFillColor(sf::Color(255, 0, 0, 100));
+
+    for (int sq = 0; sq < 64; sq++)
+    {
+        if (highlightedAttacks & (1ULL << sq))
+        {
+            int rank = sq / 8;
+            int file = sq % 8;
+
+            attackHighlight.setPosition(file * tileSize, (7 - rank) * tileSize);
+            window.draw(attackHighlight);
         }
     }
 }
