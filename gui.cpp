@@ -53,32 +53,23 @@ void ChessGUI::run()
                         selectedPiece = p;    // assigns piece type
                         pieceSelected = true; // updates state
 
-                        uint64_t friendly =
-                            (p >= WP && p <= WK) ? board.white_pieces : board.black_pieces;
-                        uint64_t enemy = 
-                            (p >= WP && p <= WK) ? board.black_pieces : board.white_pieces;
-
                         // highlight moves
                         auto moves = generate_moves(board);
 
-                            highlightedMoves = 0ULL;
-                            highlightedAttacks = 0ULL;
+                        highlightedMoves = 0ULL;
+                        highlightedAttacks = 0ULL;
 
-                            for (const auto& m : moves)
+                        for (const auto& m : moves)
+                        {
+                            if (m.from == sq)
                             {
-                                if (m.from == sq)
-                                {
+                                if (m.captured == EMPTY)
                                     highlightedMoves |= (1ULL << m.to);
-
-                                    if (m.captured != EMPTY)
-                                        highlightedAttacks |= (1ULL << m.to);
-                                }
+                                else
+                                    highlightedAttacks |= (1ULL << m.to);
                             }
-                        
-                        highlightedAttacks = highlightedMoves & enemy;
-                        highlightedMoves &= ~friendly;
-                        highlightedMoves &= ~enemy;
-                        legalMoves = highlightedMoves | highlightedAttacks;
+                        }
+
                     }
                     
                 }
@@ -107,7 +98,6 @@ void ChessGUI::run()
                     selectedPiece = EMPTY;
                     highlightedMoves = 0ULL;
                     highlightedAttacks = 0ULL;
-                    legalMoves = 0ULL;
                 }
             }
         }

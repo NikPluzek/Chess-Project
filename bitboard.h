@@ -5,11 +5,25 @@
 #include <iostream>
 #include <string>
 
+
+// preventing wraparounds
+constexpr uint64_t FILE_A = 0x0101010101010101ULL;
+constexpr uint64_t FILE_H = 0x8080808080808080ULL;
+
 // Convert rank/file to square index
 constexpr int square_index(int rank, int file) { return rank * 8 + file; }
 
 // Bit manipulation helpers
 constexpr uint64_t set_bit(int sq) { return 1ULL << sq; }
+
+// Pop least significant bit and return its index, or -1 if zero.
+inline int pop_lsb(uint64_t &bb)
+{
+    if (!bb) return -1;
+    int idx = __builtin_ctzll(bb);
+    bb &= bb - 1ULL;
+    return idx;
+}
 
 // Visualize a bitboard
 inline void print_bitboard(uint64_t bb)
@@ -270,5 +284,6 @@ inline uint64_t pawn_moves(int sq, bool is_white, uint64_t occupied, uint64_t en
 
     return moves;
 }
+
 
 #endif
