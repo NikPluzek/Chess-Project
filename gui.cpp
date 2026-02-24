@@ -1,6 +1,8 @@
 #include "gui.h"
 #include "bitboard.h"
 #include "board.h"
+#include "movegen.h"
+#include "move.h"
 
 ChessGUI::ChessGUI(Board& b) : board(b)
 {
@@ -57,26 +59,21 @@ void ChessGUI::run()
                             (p >= WP && p <= WK) ? board.black_pieces : board.white_pieces;
 
                         // highlight moves
-                        if (p == BN || p == WN) // knight moves
-                            highlightedMoves = knight_attacks[sq];
+                        auto moves = generate_moves(board);
 
-                        else if (p == BR || p == WR) // rook moves
-                            highlightedMoves = rook_attacks(sq, board.occupied);
-
-                        else if (p == BB || p == WB) // bishop moves
-                            highlightedMoves = bishop_attacks(sq, board.occupied);
-
-                        else if (p == BQ || p == WQ) // queen moves
-                            highlightedMoves = queen_attacks(sq, board.occupied);
-
-                        else if (p == BK || p == WK)
-                            highlightedMoves = king_attacks[sq];
-                        
-                        else if (p == BP || p == WP)
-                            highlightedMoves = pawn_moves(sq, p == WP, board.occupied, (p == WP ? board.black_pieces : board.white_pieces));
-
-                        else
                             highlightedMoves = 0ULL;
+                            highlightedAttacks = 0ULL;
+
+                            for (const auto& m : moves)
+                            {
+                                if (m.from == sq)
+                                {
+                                    highlightedMoves |= (1ULL << m.to);
+
+                                    if (m.captured != EMPTY)
+                                        highlightedAttacks |= (1ULL << m.to);
+                                }
+                            }
                         
                         highlightedAttacks = highlightedMoves & enemy;
                         highlightedMoves &= ~friendly;
@@ -89,13 +86,19 @@ void ChessGUI::run()
                 else // once piece is selected, wait for destination square from the second click
                 {
                     // only allow move if square is legal
-                    if (legalMoves & (1ULL << sq)) // highlightedMoves contains the legal moves for the selected piece
-                    {
-                        board.remove_piece(sq); // remove enemy piece
-                        board.remove_piece(selectedSquare); // remove piece from original square
-                        board.set_piece(selectedPiece, sq); // place piece on new square
+                    auto moves = generate_moves(board);
 
-                        board.white_to_move = !board.white_to_move; // alternating turns
+                    for (const auto& m : moves)
+                    {
+                        if (m.from == selectedSquare && m.to == sq)
+                        {
+                            board.remove_piece(m.to);
+                            board.remove_piece(m.from);
+                            board.set_piece(m.piece, m.to);
+
+                            board.white_to_move = !board.white_to_move;
+                            break;
+                        }
                     }
 
                     // reset state
