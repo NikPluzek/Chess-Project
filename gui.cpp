@@ -10,6 +10,7 @@ ChessGUI::ChessGUI(Board& b) : board(b)
     window.setVisible(true);
     window.setPosition(sf::Vector2i(200, 200));
     window.setFramerateLimit(60);
+    load_textures();
 }
 
 void ChessGUI::run()
@@ -122,33 +123,26 @@ void ChessGUI::draw_board()
     }
 }
 
+
+
 void ChessGUI::draw_pieces()
 {
-    sf::CircleShape piece(tileSize / 2 - 10);
-    // piece.setFillColor(sf::Color::Red);
-
     for (int sq = 0; sq < 64; sq++)
     {
         Piece p = board.piece_at(sq);
         if (p == EMPTY)
             continue;
 
-        // defining piece colour
-        if (p >= WP && p <= WK)
-        {
-            piece.setFillColor(sf::Color::White);
-            piece.setOutlineThickness(3.f);
-            piece.setOutlineColor(sf::Color::Black);
-        }
-        else
-            piece.setFillColor(sf::Color::Black);
+        sf::Sprite sprite(textures[p]);
 
         int rank = sq / 8;
         int file = sq % 8;
 
-        piece.setPosition(file * tileSize + 10, (7 - rank) * tileSize + 10);
+        sprite.setPosition(file * tileSize - 5, (7 - rank) * tileSize - 5);
 
-        window.draw(piece);
+
+        
+        window.draw(sprite);
     }
 }
 
@@ -196,5 +190,16 @@ void ChessGUI::draw_highlights()
             attackHighlight.setPosition(file * tileSize, (7 - rank) * tileSize);
             window.draw(attackHighlight);
         }
+    }
+}
+
+void ChessGUI::load_textures() {
+    std::string colours[2] = {"w", "b"};
+    std::string letters[6] = {"P", "N", "B", "R", "Q", "K"};
+    for (int p = 1; p <= 12; p++)
+    {
+        std::string colour = colours[p <= 6 ? 0 : 1];
+        std::string letter = letters[(p - 1) % 6];
+        textures[p].loadFromFile("pieces/" + colour + letter + ".png");
     }
 }

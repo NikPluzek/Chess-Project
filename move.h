@@ -10,6 +10,7 @@ struct Move {
     Piece captured;
     bool is_en_passant = false;
     int prev_en_passant_sq = -1;
+    Piece promotion = EMPTY;
 };
 
 #endif

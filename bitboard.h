@@ -286,4 +286,6 @@ inline uint64_t pawn_moves(int sq, bool is_white, uint64_t occupied, uint64_t en
 }
 
 
+
+
 #endif

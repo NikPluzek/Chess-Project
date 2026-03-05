@@ -1,5 +1,6 @@
 #include "board.h"
 #include "move.h"
+#include "bitboard.h"
 
 Board::Board() { clear(); }
 
@@ -18,13 +19,6 @@ void Board::clear()
     en_passant_sq = -1;
 }
 
-void Board::update_occupancy()
-{
-    white_pieces = pieces[WP] | pieces[WN] | pieces[WB] | pieces[WR] | pieces[WQ] | pieces[WK];
-    black_pieces = pieces[BP] | pieces[BN] | pieces[BB] | pieces[BR] | pieces[BQ] | pieces[BK];
-    occupied = white_pieces | black_pieces;
-}
-
 Piece Board::piece_at(int sq) const
 {
     return squares[sq];
@@ -39,11 +33,6 @@ void Board::set_piece(Piece p, int sq)
         white_pieces |= (1ULL << sq);
     else if (p >= BP && p <= BK)
         black_pieces |= (1ULL << sq);
-
-    if (p == WP)
-        white_pawns |= (1ULL << sq);
-    if (p == BP)
-        black_pawns |= (1ULL << sq);
 
     occupied |= (1ULL << sq);
 
@@ -67,10 +56,6 @@ void Board::remove_piece(int sq)
     else if (p >= BP && p <= BK)
         black_pieces &= ~(1ULL << sq);
 
-    if (p == WP)
-        white_pawns &= ~(1ULL << sq);
-    if (p == BP)
-        black_pawns &= ~(1ULL << sq);
 
     occupied &= ~(1ULL << sq);
 }
@@ -93,7 +78,14 @@ void Board::make_move(const Move& m)
     }
     
     // Step 3: Place the moving piece at destination
-    set_piece(m.piece, m.to);
+    if (m.promotion == EMPTY)
+    {  
+        set_piece(m.piece, m.to);  
+    }  
+    else
+    {  
+        set_piece(m.promotion, m.to);  
+    }
     
     // Step 4: Handle en passant target square
     bool is_pawn = (m.piece == WP || m.piece == BP);
@@ -130,4 +122,23 @@ void Board::unmake_move(const Move& m)
     }
 
     en_passant_sq = m.prev_en_passant_sq; // restore previous EP state
+}
+
+void load_pieces(Board& board) {
+
+    // Back rank piece order
+    Piece back_rank[8] = { WR, WN, WB, WQ, WK, WB, WN, WR };
+
+    for (int file = 0; file < 8; file++)
+    {
+        // White back rank
+        board.set_piece(back_rank[file], square_index(0, file));
+        // White pawns
+        board.set_piece(WP, square_index(1, file));
+        // Black pawns
+        board.set_piece(BP, square_index(6, file));
+        // Black back rank (same order, just different colour)
+        Piece black_piece = (Piece)(back_rank[file] + 6); // offset by 6 to get black equivalent
+        board.set_piece(black_piece, square_index(7, file));
+    }
 }

@@ -27,6 +27,10 @@ class ChessGUI
     void draw_pieces();
     void draw_highlights();
     int mouse_to_square(int x, int y);
+
+    //loading piece PNGs
+    sf::Texture textures[13];
+    void load_textures();
 };
 
 #endif

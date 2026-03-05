@@ -21,8 +21,7 @@ class Board
     uint64_t white_pieces;
     uint64_t black_pieces;
     uint64_t occupied;
-    uint64_t white_pawns;
-    uint64_t black_pawns;
+
 
     int white_king_sq; 
     int black_king_sq;
@@ -41,7 +40,10 @@ class Board
     bool white_to_move;
     void make_move(const Move& m);
     void unmake_move(const Move& m);
+    
 
-  };
+};
+
+void load_pieces(Board& board);
 
 #endif
