@@ -8,6 +8,8 @@ struct Move {
     int to;
     Piece piece;
     Piece captured;
+    bool is_en_passant = false;
+    int prev_en_passant_sq = -1;
 };
 
 #endif

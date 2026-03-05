@@ -21,6 +21,22 @@ std::vector<Move>  generate_moves_pseudolegal(const Board& board)
                 Move m; m.from = from; m.to = to; m.piece = WP; m.captured = board.piece_at(to);
                 moves.push_back(m);
             }
+
+            // ✅ En passant for WHITE — you have this, and it's in the right place
+            if (board.en_passant_sq != -1)
+            {
+                uint64_t ep_attacks = pawn_attacks(from, true) & (1ULL << board.en_passant_sq);
+                while (ep_attacks)
+                {
+                    int to = pop_lsb(ep_attacks);
+                    Move m;
+                    m.from = from; m.to = to;
+                    m.piece = WP;
+                    m.captured = BP;
+                    m.is_en_passant = true;
+                    moves.push_back(m);
+                }
+            }
         }
     }
     else
@@ -35,6 +51,22 @@ std::vector<Move>  generate_moves_pseudolegal(const Board& board)
                 int to = pop_lsb(targets);
                 Move m; m.from = from; m.to = to; m.piece = BP; m.captured = board.piece_at(to);
                 moves.push_back(m);
+            }
+
+            // ✅ En passant for BLACK — this is what was missing
+            if (board.en_passant_sq != -1)
+            {
+                uint64_t ep_attacks = pawn_attacks(from, false) & (1ULL << board.en_passant_sq);
+                while (ep_attacks)
+                {
+                    int to = pop_lsb(ep_attacks);
+                    Move m;
+                    m.from = from; m.to = to;
+                    m.piece = BP;
+                    m.captured = WP; // ← WP not BP, black is capturing a white pawn
+                    m.is_en_passant = true;
+                    moves.push_back(m);
+                }
             }
         }
     }
@@ -148,7 +180,9 @@ std::vector<Move> generate_moves(const Board& board)
         Board temp = board;
         
         // Execute the move on the copy
-        temp.make_move(m);
+        Move m_copy = m;
+        m_copy.prev_en_passant_sq = board.en_passant_sq; // save it
+        temp.make_move(m_copy);
         
         // Check if the side that just moved has their king in check
         // board.white_to_move tells us who was moving
@@ -156,7 +190,7 @@ std::vector<Move> generate_moves(const Board& board)
         // So we check if board.white_to_move's king is safe on the modified board
         if (!is_in_check(temp, board.white_to_move))
         {
-            legal.push_back(m);
+            legal.push_back(m_copy);
         }
     }
     

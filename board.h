@@ -26,6 +26,7 @@ class Board
 
     int white_king_sq; 
     int black_king_sq;
+    int en_passant_sq = -1;
 
     Board();
 

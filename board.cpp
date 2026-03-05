@@ -15,6 +15,7 @@ void Board::clear()
     black_pieces = 0ULL;
     occupied = 0ULL;
     white_to_move = true;
+    en_passant_sq = -1;
 }
 
 void Board::update_occupancy()
@@ -79,8 +80,14 @@ void Board::make_move(const Move& m)
     // Step 1: Remove piece from source square
     remove_piece(m.from);
     
+    //en passant
+    if (m.is_en_passant)
+    {
+        int captured_pawn_sq = m.to + (white_to_move ? -8 : 8); // capture the pawn behind the destination square
+        remove_piece(captured_pawn_sq);
+    }
     // Step 2: If there's a piece to capture, remove it
-    if (m.captured != EMPTY)
+    else if (m.captured != EMPTY)
     {
         remove_piece(m.to);
     }
@@ -88,24 +95,39 @@ void Board::make_move(const Move& m)
     // Step 3: Place the moving piece at destination
     set_piece(m.piece, m.to);
     
-    // Step 4: Switch whose turn it is
+    // Step 4: Handle en passant target square
+    bool is_pawn = (m.piece == WP || m.piece == BP);
+    int rank_diff = (m.to / 8) - (m.from / 8);
+    if (is_pawn && (rank_diff == 2 || rank_diff == -2)){
+        en_passant_sq = (m.from + m.to) / 2; // the skipped square
+    }
+    else {
+        en_passant_sq = -1; // reset if not a double pawn move
+    }
+
+
+    // Step 5: Switch whose turn it is
     white_to_move = !white_to_move;
 }
 
 void Board::unmake_move(const Move& m)
 {
-    // Step 1: Remove the piece from destination
+    white_to_move = !white_to_move; // restore turn first
+
     remove_piece(m.to);
-    
-    // Step 2: Place it back at source
     set_piece(m.piece, m.from);
-    
-    // Step 3: If a piece was captured, restore it at destination
-    if (m.captured != EMPTY)
+
+    if (m.is_en_passant)
+    {
+        // Restore the captured pawn on its original square
+        int captured_pawn_sq = m.to + (white_to_move ? -8 : 8);
+        Piece captured_pawn = white_to_move ? BP : WP; // opponent's pawn
+        set_piece(captured_pawn, captured_pawn_sq);
+    }
+    else if (m.captured != EMPTY)
     {
         set_piece(m.captured, m.to);
     }
-    
-    // Step 4: Switch whose turn it is back
-    white_to_move = !white_to_move;
+
+    en_passant_sq = m.prev_en_passant_sq; // restore previous EP state
 }

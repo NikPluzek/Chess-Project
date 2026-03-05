@@ -63,7 +63,7 @@ void ChessGUI::run()
                         {
                             if (m.from == sq)
                             {
-                                if (m.captured == EMPTY)
+                                if (m.captured == EMPTY || m.is_en_passant)
                                     highlightedMoves |= (1ULL << m.to);
                                 else
                                     highlightedAttacks |= (1ULL << m.to);
@@ -74,25 +74,19 @@ void ChessGUI::run()
                     
                 }
                 // --- MOVE PIECE --- (second click)
-                else // once piece is selected, wait for destination square from the second click
+                else
                 {
-                    // only allow move if square is legal
                     auto moves = generate_moves(board);
 
                     for (const auto& m : moves)
                     {
                         if (m.from == selectedSquare && m.to == sq)
                         {
-                            board.remove_piece(m.to);
-                            board.remove_piece(m.from);
-                            board.set_piece(m.piece, m.to);
-
-                            board.white_to_move = !board.white_to_move;
+                            board.make_move(m);  // ✅ handles EP, sets en_passant_sq, switches turn
                             break;
                         }
                     }
 
-                    // reset state
                     pieceSelected = false;
                     selectedSquare = -1;
                     selectedPiece = EMPTY;
