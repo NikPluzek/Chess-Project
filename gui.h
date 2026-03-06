@@ -3,6 +3,7 @@
 
 #include "board.h"
 #include <SFML/Graphics.hpp>
+#include "move.h"
 
 class ChessGUI
 {
@@ -31,6 +32,13 @@ class ChessGUI
     //loading piece PNGs
     sf::Texture textures[13];
     void load_textures();
+
+    //promotion menu
+    bool awaiting_promotion = false;
+    Move pending_promotion_move;
+
+    void draw_promotion_picker();
+    bool handle_promotion_click(int sq);
 };
 
 #endif

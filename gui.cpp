@@ -1,8 +1,8 @@
 #include "gui.h"
 #include "bitboard.h"
 #include "board.h"
-#include "movegen.h"
 #include "move.h"
+#include "movegen.h"
 
 ChessGUI::ChessGUI(Board& b) : board(b)
 {
@@ -37,18 +37,22 @@ void ChessGUI::run()
 
                 Piece p = board.piece_at(sq); // get piece at clicked square
 
+                if (awaiting_promotion)
+                {
+                    handle_promotion_click(sq);
+                    continue; // don't process this click as a normal move
+                }
+
                 // --- SELECT PIECE --- (first click)
                 if (!pieceSelected) // checks for first piece selection
                 {
                     if (p != EMPTY)
                     {
                         // turn based system validation
-                        if ((board.white_to_move && p >= BP) ||
-                            (!board.white_to_move && p <= WK))
+                        if ((board.white_to_move && p >= BP) || (!board.white_to_move && p <= WK))
                         {
                             continue; // wrong colour piece
                         }
-
 
                         selectedSquare = sq;
                         selectedPiece = p;    // assigns piece type
@@ -70,9 +74,7 @@ void ChessGUI::run()
                                     highlightedAttacks |= (1ULL << m.to);
                             }
                         }
-
                     }
-                    
                 }
                 // --- MOVE PIECE --- (second click)
                 else
@@ -83,8 +85,19 @@ void ChessGUI::run()
                     {
                         if (m.from == selectedSquare && m.to == sq)
                         {
-                            board.make_move(m);  // ✅ handles EP, sets en_passant_sq, switches turn
-                            break;
+                            if ((m.piece == WP && m.to / 8 == 7) ||
+                                (m.piece == BP && m.to / 8 == 0))
+                            {
+                                // dont make_move yet, wait for promotion choice
+                                awaiting_promotion = true;
+                                pending_promotion_move = m; // store the queen version for now
+                                break;
+                            }
+                            else
+                            {
+                                board.make_move(m);
+                                break;
+                            }
                         }
                     }
 
@@ -102,6 +115,10 @@ void ChessGUI::run()
         draw_board();
         draw_highlights(); // you can enable this now
         draw_pieces();
+        if (awaiting_promotion)
+        {
+            draw_promotion_picker();
+        }
         window.display();
     }
 }
@@ -123,8 +140,6 @@ void ChessGUI::draw_board()
     }
 }
 
-
-
 void ChessGUI::draw_pieces()
 {
     for (int sq = 0; sq < 64; sq++)
@@ -140,8 +155,6 @@ void ChessGUI::draw_pieces()
 
         sprite.setPosition(file * tileSize - 5, (7 - rank) * tileSize - 5);
 
-
-        
         window.draw(sprite);
     }
 }
@@ -193,7 +206,8 @@ void ChessGUI::draw_highlights()
     }
 }
 
-void ChessGUI::load_textures() {
+void ChessGUI::load_textures()
+{
     std::string colours[2] = {"w", "b"};
     std::string letters[6] = {"P", "N", "B", "R", "Q", "K"};
     for (int p = 1; p <= 12; p++)
@@ -202,4 +216,84 @@ void ChessGUI::load_textures() {
         std::string letter = letters[(p - 1) % 6];
         textures[p].loadFromFile("pieces/" + colour + letter + ".png");
     }
+}
+
+void ChessGUI::draw_promotion_picker()
+{
+    int file = pending_promotion_move.to % 8;
+    bool is_white = (pending_promotion_move.piece == WP);
+
+    Piece options[4];
+    if (is_white)
+    {
+        options[0] = WQ;
+        options[1] = WR;
+        options[2] = WB;
+        options[3] = WN;
+    }
+    else
+    {
+        options[0] = BQ;
+        options[1] = BR;
+        options[2] = BB;
+        options[3] = BN;
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        int rank = is_white ? (7 - i) : i;
+
+        // background square
+        sf::RectangleShape bg(sf::Vector2f(tileSize, tileSize));
+        bg.setPosition(file * tileSize, (7 - rank) * tileSize);
+        bg.setFillColor(sf::Color(200, 200, 200, 230));
+        window.draw(bg);
+
+        // piece sprite
+        sf::Sprite sprite(textures[options[i]]);
+        sprite.setPosition(file * tileSize - 5, (7 - rank) * tileSize - 5);
+        window.draw(sprite);
+    }
+}
+
+bool ChessGUI::handle_promotion_click(int sq)
+{
+    int file = sq % 8;
+    int rank = sq / 8;
+    
+    if (file != pending_promotion_move.to % 8)
+        return false; // click was outside the promotion options
+
+    if (pending_promotion_move.piece == WP)
+    {
+        if (rank == 7 - 0) // queen
+            pending_promotion_move.promotion = WQ;
+        else if (rank == 7 - 1) // rook
+            pending_promotion_move.promotion = WR;
+        else if (rank == 7 - 2) // bishop
+            pending_promotion_move.promotion = WB;
+        else if (rank == 7 - 3) // knight
+            pending_promotion_move.promotion = WN;
+        else
+            return false;
+    }
+    else if (pending_promotion_move.piece == BP)
+    {
+        if (rank == 0) // queen
+            pending_promotion_move.promotion = BQ;
+        else if (rank == 1) // rook
+            pending_promotion_move.promotion = BR;
+        else if (rank == 2) // bishop
+            pending_promotion_move.promotion = BB;
+        else if (rank == 3) // knight
+            pending_promotion_move.promotion = BN;
+        else
+            return false;
+    }
+    else
+        return false;
+
+    board.make_move(pending_promotion_move);
+    awaiting_promotion = false;
+    return true;
 }

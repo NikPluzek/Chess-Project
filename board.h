@@ -40,6 +40,15 @@ class Board
     bool white_to_move;
     void make_move(const Move& m);
     void unmake_move(const Move& m);
+
+    // castling
+    bool WK_moved = false;
+    bool WR_K_moved = false;
+    bool WR_Q_moved = false;
+
+    bool BK_moved = false;
+    bool BR_K_moved = false;
+    bool BR_Q_moved = false;
     
 
 };

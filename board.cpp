@@ -97,8 +97,23 @@ void Board::make_move(const Move& m)
         en_passant_sq = -1; // reset if not a double pawn move
     }
 
+    // step 5: handle castling rights
+    if (m.piece == WK){
+        WK_moved = true;
+    }
+    if(m.piece == BK){
+        BK_moved = true;
+    }
+    if (m.piece == WR){
+        if (m.from == square_index(0, 0)) WR_Q_moved = true;
+        else if (m.from == square_index(0, 7)) WR_K_moved = true;
+    }
+    if (m.piece == BR){
+        if (m.from == square_index(7, 0)) BR_Q_moved = true;
+        else if (m.from == square_index(7, 7)) BR_K_moved = true;
+    }
 
-    // Step 5: Switch whose turn it is
+    // Step 6: Switch whose turn it is
     white_to_move = !white_to_move;
 }
 

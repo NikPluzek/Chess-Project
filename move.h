@@ -11,6 +11,12 @@ struct Move {
     bool is_en_passant = false;
     int prev_en_passant_sq = -1;
     Piece promotion = EMPTY;
+    bool prev_WK_moved = false;
+    bool prev_WR_K_moved = false;
+    bool prev_WR_Q_moved = false;
+    bool prev_BK_moved = false;
+    bool prev_BR_K_moved = false;
+    bool prev_BR_Q_moved = false;
 };
 
 #endif
