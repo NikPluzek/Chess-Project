@@ -96,6 +96,18 @@ void ChessGUI::run()
                             else
                             {
                                 board.make_move(m);
+                                auto moves = generate_moves(board);
+                                if (moves.empty())
+                                {
+                                    if (is_in_check(board, board.white_to_move))
+                                    {
+                                        gameState = GameState::Checkmate;
+                                    }
+                                    else
+                                    {
+                                        gameState = GameState::Stalemate;
+                                    }
+                                }
                                 break;
                             }
                         }
@@ -118,6 +130,10 @@ void ChessGUI::run()
         if (awaiting_promotion)
         {
             draw_promotion_picker();
+        }
+        if ( gameState != GameState::Playing)
+        {
+            draw_game_over();
         }
         window.display();
     }
@@ -216,6 +232,7 @@ void ChessGUI::load_textures()
         std::string letter = letters[(p - 1) % 6];
         textures[p].loadFromFile("pieces/" + colour + letter + ".png");
     }
+    font.loadFromFile("Roboto-Regular.ttf");
 }
 
 void ChessGUI::draw_promotion_picker()
@@ -296,4 +313,38 @@ bool ChessGUI::handle_promotion_click(int sq)
     board.make_move(pending_promotion_move);
     awaiting_promotion = false;
     return true;
+}
+
+void ChessGUI::draw_game_over()
+{
+    // dark overlay
+    sf::RectangleShape overlay(sf::Vector2f(tileSize * 8, tileSize * 8));
+    overlay.setPosition(0, 0);
+    overlay.setFillColor(sf::Color(0, 0, 0, 150));
+    window.draw(overlay);
+
+    // main text
+    sf::Text text;
+    text.setFont(font);
+    text.setString(gameState == GameState::Checkmate ? "Checkmate!" : "Stalemate");
+    text.setCharacterSize(48);
+    text.setFillColor(sf::Color::White);
+    sf::FloatRect bounds = text.getLocalBounds();
+    text.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    text.setPosition(tileSize * 4, tileSize * 3.5f);
+    window.draw(text);
+
+    // subtext
+    sf::Text sub;
+    sub.setFont(font);
+    if (gameState == GameState::Checkmate)
+        sub.setString(board.white_to_move ? "Black wins!" : "White wins!");
+    else
+        sub.setString("Draw");
+    sub.setCharacterSize(28);
+    sub.setFillColor(sf::Color(200, 200, 200));
+    sf::FloatRect subBounds = sub.getLocalBounds();
+    sub.setOrigin(subBounds.width / 2.f, subBounds.height / 2.f);
+    sub.setPosition(tileSize * 4, tileSize * 4.5f);
+    window.draw(sub);
 }

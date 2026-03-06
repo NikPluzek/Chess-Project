@@ -39,6 +39,12 @@ class ChessGUI
 
     void draw_promotion_picker();
     bool handle_promotion_click(int sq);
+
+    //gameover
+    enum class GameState { Playing, Checkmate, Stalemate };
+    GameState gameState = GameState::Playing;
+    sf::Font font;
+    void draw_game_over();
 };
 
 #endif

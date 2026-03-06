@@ -113,6 +113,31 @@ void Board::make_move(const Move& m)
         else if (m.from == square_index(7, 7)) BR_K_moved = true;
     }
 
+    // Handle castling move
+    if (m.is_castling)
+    {
+        if (m.to == 6)  // white kingside
+        {
+            remove_piece(7);
+            set_piece(WR, 5);
+        }
+        else if (m.to == 2)  // white queenside
+        {
+            remove_piece(0);
+            set_piece(WR, 3);
+        }
+        else if (m.to == 62)  // black kingside
+        {
+            remove_piece(63);
+            set_piece(BR, 61);
+        }
+        else if (m.to == 58)  // black queenside
+        {
+            remove_piece(56);
+            set_piece(BR, 59);
+        }
+    }
+
     // Step 6: Switch whose turn it is
     white_to_move = !white_to_move;
 }
@@ -136,7 +161,35 @@ void Board::unmake_move(const Move& m)
         set_piece(m.captured, m.to);
     }
 
+    if (m.to == 6)  // white kingside
+    {
+        remove_piece(5);    
+        set_piece(WR, 7);   
+    }
+    else if (m.to == 2)  // white queenside
+    {
+        remove_piece(3);
+        set_piece(WR, 0);
+    }
+    else if (m.to == 62)  // black kingside
+    {
+        remove_piece(61);
+        set_piece(BR, 63);
+    }
+    else if (m.to == 58)  // black queenside
+    {
+        remove_piece(59);
+        set_piece(BR, 56);
+    }
+
+
     en_passant_sq = m.prev_en_passant_sq; // restore previous EP state
+    WK_moved = m.prev_WK_moved;
+    WR_K_moved = m.prev_WR_K_moved;
+    WR_Q_moved = m.prev_WR_Q_moved;
+    BK_moved = m.prev_BK_moved;
+    BR_K_moved = m.prev_BR_K_moved;
+    BR_Q_moved = m.prev_BR_Q_moved;
 }
 
 void load_pieces(Board& board) {

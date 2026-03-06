@@ -17,6 +17,7 @@ struct Move {
     bool prev_BK_moved = false;
     bool prev_BR_K_moved = false;
     bool prev_BR_Q_moved = false;
+    bool is_castling = false;
 };
 
 #endif

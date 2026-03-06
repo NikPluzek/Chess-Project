@@ -199,8 +199,70 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
             m.captured = board.piece_at(to);
             moves.push_back(m);
         }
-    }
 
+        // Castling 
+        if (board.white_to_move){
+            // White King Castling
+            if (board.WK_moved == false && board.WR_K_moved == false && board.piece_at(5) == EMPTY 
+            && board.piece_at(6) == EMPTY  
+            && !is_square_attacked_by(board, 4, !board.white_to_move) 
+            && !is_square_attacked_by(board, 5, !board.white_to_move) 
+            && !is_square_attacked_by(board, 6, !board.white_to_move))
+                {
+                Move m;
+                m.from = sq;
+                m.to = 6;
+                m.piece = WK;
+                m.is_castling = true;
+                moves.push_back(m);
+            }
+
+            if (board.WK_moved == false && board.WR_Q_moved == false && board.piece_at(1) == EMPTY 
+            && board.piece_at(2) == EMPTY && board.piece_at(3) == EMPTY
+            && !is_square_attacked_by(board, 2, !board.white_to_move) 
+            && !is_square_attacked_by(board, 3, !board.white_to_move)
+            && !is_square_attacked_by(board, 4, !board.white_to_move))
+                {
+                Move m;
+                m.from = sq;
+                m.to = 2;
+                m.piece = WK;
+                m.is_castling = true;
+                moves.push_back(m);
+            }
+        }
+        else{
+            // Black King Castling
+            if (board.BK_moved == false && board.BR_K_moved == false && board.piece_at(61) == EMPTY 
+            && board.piece_at(62) == EMPTY  
+            && !is_square_attacked_by(board, 60, !board.white_to_move) 
+            && !is_square_attacked_by(board, 61, !board.white_to_move) 
+            && !is_square_attacked_by(board, 62, !board.white_to_move))
+                {
+                Move m;
+                m.from = sq;
+                m.to = 62;
+                m.piece = BK;
+                m.is_castling = true;
+                moves.push_back(m);
+            }
+
+            if (board.BK_moved == false && board.BR_Q_moved == false && board.piece_at(57) == EMPTY 
+            && board.piece_at(58) == EMPTY && board.piece_at(59) == EMPTY
+            && !is_square_attacked_by(board, 57, !board.white_to_move) 
+            && !is_square_attacked_by(board, 58, !board.white_to_move)
+            && !is_square_attacked_by(board, 59, !board.white_to_move))
+                {
+                Move m;
+                m.from = sq;
+                m.to = 58;
+                m.piece = BK;
+                m.is_castling = true;
+                moves.push_back(m);
+            }
+        }   
+    }
+    
     return moves;
 }
 
@@ -282,7 +344,15 @@ std::vector<Move> generate_moves(const Board& board)
 
         // Execute the move on the copy
         Move m_copy = m;
-        m_copy.prev_en_passant_sq = board.en_passant_sq; // save it
+        m_copy.prev_en_passant_sq = board.en_passant_sq; 
+
+        m_copy.prev_WK_moved = board.WK_moved;
+        m_copy.prev_WR_K_moved = board.WR_K_moved;
+        m_copy.prev_WR_Q_moved = board.WR_Q_moved;
+        m_copy.prev_BK_moved = board.BK_moved;
+        m_copy.prev_BR_K_moved = board.BR_K_moved;
+        m_copy.prev_BR_Q_moved = board.BR_Q_moved;
+
         temp.make_move(m_copy);
 
         // Check if the side that just moved has their king in check
