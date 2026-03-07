@@ -45,6 +45,10 @@ class ChessGUI
     GameState gameState = GameState::Playing;
     sf::Font font;
     void draw_game_over();
+
+    //last move highlight
+    int from_square = -1;
+    int to_square = -1;
 };
 
 #endif

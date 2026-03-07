@@ -97,6 +97,8 @@ void ChessGUI::run()
                             {
                                 board.make_move(m);
                                 auto moves = generate_moves(board);
+                                from_square = m.from;
+                                to_square = m.to;
                                 if (moves.empty())
                                 {
                                     if (is_in_check(board, board.white_to_move))
@@ -220,6 +222,21 @@ void ChessGUI::draw_highlights()
             window.draw(attackHighlight);
         }
     }
+
+    // last move highlight
+    if (from_square != -1 && to_square != -1)
+    {
+        sf::RectangleShape moveHighlight(sf::Vector2f(tileSize, tileSize));
+        moveHighlight.setFillColor(sf::Color(255, 255, 0, 100)); 
+
+        // highlight from square
+        moveHighlight.setPosition((from_square % 8) * tileSize, (7 - from_square / 8) * tileSize);
+        window.draw(moveHighlight);
+
+        // highlight to square
+        moveHighlight.setPosition((to_square % 8) * tileSize, (7 - to_square / 8) * tileSize);
+        window.draw(moveHighlight);
+    }
 }
 
 void ChessGUI::load_textures()
@@ -311,6 +328,10 @@ bool ChessGUI::handle_promotion_click(int sq)
         return false;
 
     board.make_move(pending_promotion_move);
+    from_square = pending_promotion_move.from;
+    to_square = pending_promotion_move.to;
+
+     // Check for game over after promotion
     awaiting_promotion = false;
     return true;
 }
@@ -318,8 +339,8 @@ bool ChessGUI::handle_promotion_click(int sq)
 void ChessGUI::draw_game_over()
 {
     // dark overlay
-    sf::RectangleShape overlay(sf::Vector2f(tileSize * 8, tileSize * 8));
-    overlay.setPosition(0, 0);
+    sf::RectangleShape overlay(sf::Vector2f(tileSize * 6, tileSize * 4));
+    overlay.setPosition(tileSize, tileSize * 2);
     overlay.setFillColor(sf::Color(0, 0, 0, 150));
     window.draw(overlay);
 
