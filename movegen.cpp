@@ -214,6 +214,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 m.to = 6;
                 m.piece = WK;
                 m.is_castling = true;
+                m.captured = EMPTY;
                 moves.push_back(m);
             }
 
@@ -228,6 +229,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 m.to = 2;
                 m.piece = WK;
                 m.is_castling = true;
+                m.captured = EMPTY;
                 moves.push_back(m);
             }
         }
@@ -244,6 +246,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 m.to = 62;
                 m.piece = BK;
                 m.is_castling = true;
+                m.captured = EMPTY;
                 moves.push_back(m);
             }
 
@@ -258,6 +261,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 m.to = 58;
                 m.piece = BK;
                 m.is_castling = true;
+                m.captured = EMPTY;
                 moves.push_back(m);
             }
         }   

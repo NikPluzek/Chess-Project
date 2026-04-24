@@ -49,10 +49,13 @@ class Board
     bool BK_moved = false;
     bool BR_K_moved = false;
     bool BR_Q_moved = false;
+    void verify_state();
     
 
 };
 
 void load_pieces(Board& board);
+
+
 
 #endif

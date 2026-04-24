@@ -3,6 +3,9 @@
 #include "board.h"
 #include "move.h"
 #include "movegen.h"
+#include "engine.h"
+#include <chrono>
+#include <iostream>
 
 ChessGUI::ChessGUI(Board& b) : board(b)
 {
@@ -15,52 +18,44 @@ ChessGUI::ChessGUI(Board& b) : board(b)
 
 void ChessGUI::run()
 {
-    sf::Event event; // sfml variable that stores most recent user interaction
+    sf::Event event;
 
     while (window.isOpen())
     {
-        while (window.pollEvent(event)) // loop to process user event/interaction, if no event, skip
+        while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                window.close(); // close window if user clicks the 'X' button
+                window.close();
 
             if (event.type == sf::Event::MouseButtonPressed &&
-                event.mouseButton.button == sf::Mouse::Left) // checks for left mouse button press
+                event.mouseButton.button == sf::Mouse::Left)
             {
-
-                int sq =
-                    mouse_to_square(event.mouseButton.x,
-                                    event.mouseButton.y); // convert mouse coords to square index
+                int sq = mouse_to_square(event.mouseButton.x, event.mouseButton.y);
 
                 if (sq == -1)
-                    continue; // click was outside the board
+                    continue;
 
-                Piece p = board.piece_at(sq); // get piece at clicked square
+                Piece p = board.piece_at(sq);
 
                 if (awaiting_promotion)
                 {
                     handle_promotion_click(sq);
-                    continue; // don't process this click as a normal move
+                    continue;
                 }
 
                 // --- SELECT PIECE --- (first click)
-                if (!pieceSelected) // checks for first piece selection
+                if (!pieceSelected)
                 {
                     if (p != EMPTY)
                     {
-                        // turn based system validation
                         if ((board.white_to_move && p >= BP) || (!board.white_to_move && p <= WK))
-                        {
-                            continue; // wrong colour piece
-                        }
+                            continue;
 
                         selectedSquare = sq;
-                        selectedPiece = p;    // assigns piece type
-                        pieceSelected = true; // updates state
+                        selectedPiece = p;
+                        pieceSelected = true;
 
-                        // highlight moves
                         auto moves = generate_moves(board);
-
                         highlightedMoves = 0ULL;
                         highlightedAttacks = 0ULL;
 
@@ -88,29 +83,51 @@ void ChessGUI::run()
                             if ((m.piece == WP && m.to / 8 == 7) ||
                                 (m.piece == BP && m.to / 8 == 0))
                             {
-                                // dont make_move yet, wait for promotion choice
                                 awaiting_promotion = true;
-                                pending_promotion_move = m; // store the queen version for now
+                                pending_promotion_move = m;
                                 break;
                             }
                             else
                             {
                                 board.make_move(m);
-                                auto moves = generate_moves(board);
                                 from_square = m.from;
                                 to_square = m.to;
-                                if (moves.empty())
+
+                                // check endgame after human move
+                                auto next_moves = generate_moves(board);
+                                if (next_moves.empty())
                                 {
                                     if (is_in_check(board, board.white_to_move))
-                                    {
                                         gameState = GameState::Checkmate;
-                                    }
                                     else
-                                    {
                                         gameState = GameState::Stalemate;
+                                }
+
+                                // engine move
+                                bool engine_turn = (board.white_to_move != is_player_white);
+                                if (gameState == GameState::Playing && engine_turn)
+                                {
+                                    auto start = std::chrono::high_resolution_clock::now();
+                                    Move engine_move = get_best_move_ab(board, 5);
+                                    auto end = std::chrono::high_resolution_clock::now();
+                                    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                                    std::cout << "Engine move time: " << duration.count() << " ms" << std::endl;
+
+
+                                    board.make_move(engine_move);
+                                    from_square = engine_move.from;
+                                    to_square = engine_move.to;
+
+
+                                    auto engine_next = generate_moves(board);
+                                    if (engine_next.empty())
+                                    {
+                                        if (is_in_check(board, board.white_to_move))
+                                            gameState = GameState::Checkmate;
+                                        else
+                                            gameState = GameState::Stalemate;
                                     }
                                 }
-                                break;
                             }
                         }
                     }
@@ -127,16 +144,12 @@ void ChessGUI::run()
         // Draw
         window.clear(sf::Color::White);
         draw_board();
-        draw_highlights(); // you can enable this now
+        draw_highlights();
         draw_pieces();
         if (awaiting_promotion)
-        {
             draw_promotion_picker();
-        }
-        if ( gameState != GameState::Playing)
-        {
+        if (gameState != GameState::Playing)
             draw_game_over();
-        }
         window.display();
     }
 }
@@ -149,10 +162,8 @@ void ChessGUI::draw_board()
         {
             sf::RectangleShape square(sf::Vector2f(tileSize, tileSize));
             square.setPosition(file * tileSize, (7 - rank) * tileSize);
-
             bool dark = (rank + file) % 2;
             square.setFillColor(dark ? sf::Color(118, 150, 86) : sf::Color(238, 238, 210));
-
             window.draw(square);
         }
     }
@@ -167,12 +178,9 @@ void ChessGUI::draw_pieces()
             continue;
 
         sf::Sprite sprite(textures[p]);
-
         int rank = sq / 8;
         int file = sq % 8;
-
         sprite.setPosition(file * tileSize - 5, (7 - rank) * tileSize - 5);
-
         window.draw(sprite);
     }
 }
@@ -181,15 +189,26 @@ int ChessGUI::mouse_to_square(int mouseX, int mouseY)
 {
     int file = mouseX / tileSize;
     int rank = 7 - (mouseY / tileSize);
-
     if (file < 0 || file > 7 || rank < 0 || rank > 7)
         return -1;
-
     return rank * 8 + file;
 }
 
 void ChessGUI::draw_highlights()
 {
+    // last move highlight (drawn first, underneath everything)
+    if (from_square != -1 && to_square != -1)
+    {
+        sf::RectangleShape moveHighlight(sf::Vector2f(tileSize, tileSize));
+        moveHighlight.setFillColor(sf::Color(255, 255, 0, 100));
+
+        moveHighlight.setPosition((from_square % 8) * tileSize, (7 - from_square / 8) * tileSize);
+        window.draw(moveHighlight);
+
+        moveHighlight.setPosition((to_square % 8) * tileSize, (7 - to_square / 8) * tileSize);
+        window.draw(moveHighlight);
+    }
+
     // grey circles for moves
     sf::CircleShape highlight(tileSize / 2 - 20);
     highlight.setFillColor(sf::Color(100, 100, 200, 100));
@@ -200,16 +219,14 @@ void ChessGUI::draw_highlights()
         {
             int rank = sq / 8;
             int file = sq % 8;
-
             highlight.setPosition(file * tileSize + 20, (7 - rank) * tileSize + 20);
-
             window.draw(highlight);
         }
     }
 
     // red squares for attacks
     sf::RectangleShape attackHighlight(sf::Vector2f(tileSize, tileSize));
-    attackHighlight.setFillColor(sf::Color(255, 0, 0, 100));
+    attackHighlight.setFillColor(sf::Color(155, 0, 0, 255));
 
     for (int sq = 0; sq < 64; sq++)
     {
@@ -217,25 +234,9 @@ void ChessGUI::draw_highlights()
         {
             int rank = sq / 8;
             int file = sq % 8;
-
             attackHighlight.setPosition(file * tileSize, (7 - rank) * tileSize);
             window.draw(attackHighlight);
         }
-    }
-
-    // last move highlight
-    if (from_square != -1 && to_square != -1)
-    {
-        sf::RectangleShape moveHighlight(sf::Vector2f(tileSize, tileSize));
-        moveHighlight.setFillColor(sf::Color(255, 255, 0, 100)); 
-
-        // highlight from square
-        moveHighlight.setPosition((from_square % 8) * tileSize, (7 - from_square / 8) * tileSize);
-        window.draw(moveHighlight);
-
-        // highlight to square
-        moveHighlight.setPosition((to_square % 8) * tileSize, (7 - to_square / 8) * tileSize);
-        window.draw(moveHighlight);
     }
 }
 
@@ -277,13 +278,11 @@ void ChessGUI::draw_promotion_picker()
     {
         int rank = is_white ? (7 - i) : i;
 
-        // background square
         sf::RectangleShape bg(sf::Vector2f(tileSize, tileSize));
         bg.setPosition(file * tileSize, (7 - rank) * tileSize);
         bg.setFillColor(sf::Color(200, 200, 200, 230));
         window.draw(bg);
 
-        // piece sprite
         sf::Sprite sprite(textures[options[i]]);
         sprite.setPosition(file * tileSize - 5, (7 - rank) * tileSize - 5);
         window.draw(sprite);
@@ -294,35 +293,25 @@ bool ChessGUI::handle_promotion_click(int sq)
 {
     int file = sq % 8;
     int rank = sq / 8;
-    
+
     if (file != pending_promotion_move.to % 8)
-        return false; // click was outside the promotion options
+        return false;
 
     if (pending_promotion_move.piece == WP)
     {
-        if (rank == 7 - 0) // queen
-            pending_promotion_move.promotion = WQ;
-        else if (rank == 7 - 1) // rook
-            pending_promotion_move.promotion = WR;
-        else if (rank == 7 - 2) // bishop
-            pending_promotion_move.promotion = WB;
-        else if (rank == 7 - 3) // knight
-            pending_promotion_move.promotion = WN;
-        else
-            return false;
+        if (rank == 7) pending_promotion_move.promotion = WQ;
+        else if (rank == 6) pending_promotion_move.promotion = WR;
+        else if (rank == 5) pending_promotion_move.promotion = WB;
+        else if (rank == 4) pending_promotion_move.promotion = WN;
+        else return false;
     }
     else if (pending_promotion_move.piece == BP)
     {
-        if (rank == 0) // queen
-            pending_promotion_move.promotion = BQ;
-        else if (rank == 1) // rook
-            pending_promotion_move.promotion = BR;
-        else if (rank == 2) // bishop
-            pending_promotion_move.promotion = BB;
-        else if (rank == 3) // knight
-            pending_promotion_move.promotion = BN;
-        else
-            return false;
+        if (rank == 0) pending_promotion_move.promotion = BQ;
+        else if (rank == 1) pending_promotion_move.promotion = BR;
+        else if (rank == 2) pending_promotion_move.promotion = BB;
+        else if (rank == 3) pending_promotion_move.promotion = BN;
+        else return false;
     }
     else
         return false;
@@ -330,21 +319,47 @@ bool ChessGUI::handle_promotion_click(int sq)
     board.make_move(pending_promotion_move);
     from_square = pending_promotion_move.from;
     to_square = pending_promotion_move.to;
-
-     // Check for game over after promotion
     awaiting_promotion = false;
+
+    // check endgame after promotion
+    auto next_moves = generate_moves(board);
+    if (next_moves.empty())
+    {
+        if (is_in_check(board, board.white_to_move))
+            gameState = GameState::Checkmate;
+        else
+            gameState = GameState::Stalemate;
+    }
+
+    // engine move after promotion
+    bool engine_turn = (board.white_to_move != is_player_white);
+    if (gameState == GameState::Playing && engine_turn)
+    {
+        Move engine_move = get_best_move_ab(board, 5);
+        board.make_move(engine_move);
+        from_square = engine_move.from;
+        to_square = engine_move.to;
+
+        auto engine_next = generate_moves(board);
+        if (engine_next.empty())
+        {
+            if (is_in_check(board, board.white_to_move))
+                gameState = GameState::Checkmate;
+            else
+                gameState = GameState::Stalemate;
+        }
+    }
+
     return true;
 }
 
 void ChessGUI::draw_game_over()
 {
-    // dark overlay
     sf::RectangleShape overlay(sf::Vector2f(tileSize * 6, tileSize * 4));
     overlay.setPosition(tileSize, tileSize * 2);
     overlay.setFillColor(sf::Color(0, 0, 0, 150));
     window.draw(overlay);
 
-    // main text
     sf::Text text;
     text.setFont(font);
     text.setString(gameState == GameState::Checkmate ? "Checkmate!" : "Stalemate");
@@ -355,7 +370,6 @@ void ChessGUI::draw_game_over()
     text.setPosition(tileSize * 4, tileSize * 3.5f);
     window.draw(text);
 
-    // subtext
     sf::Text sub;
     sub.setFont(font);
     if (gameState == GameState::Checkmate)

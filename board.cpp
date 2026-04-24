@@ -26,8 +26,18 @@ Piece Board::piece_at(int sq) const
 
 void Board::set_piece(Piece p, int sq)
 {
+    // Clear from ALL bitboards first
+    for (int i = 1; i <= 12; i++)
+        pieces[i] &= ~(1ULL << sq);
+    
+    // ADD THESE THREE LINES:
+    white_pieces &= ~(1ULL << sq);
+    black_pieces &= ~(1ULL << sq);
+    occupied &= ~(1ULL << sq);
+    
+    // NOW set the piece
     pieces[p] |= (1ULL << sq);
-    squares[sq] = p;   // ⭐ NEW
+    squares[sq] = p;
 
     if (p >= WP && p <= WK)
         white_pieces |= (1ULL << sq);
@@ -49,13 +59,17 @@ void Board::remove_piece(int sq)
     if (p == BK) black_king_sq = -1;
 
     pieces[p] &= ~(1ULL << sq);
-    squares[sq] = EMPTY; 
+    
+    // CRITICAL FIX: Clear this square from ALL piece bitboards
+    for (int i = 1; i <= 12; i++)
+        pieces[i] &= ~(1ULL << sq);
+    
+    squares[sq] = EMPTY;
 
     if (p >= WP && p <= WK)
         white_pieces &= ~(1ULL << sq);
     else if (p >= BP && p <= BK)
         black_pieces &= ~(1ULL << sq);
-
 
     occupied &= ~(1ULL << sq);
 }
@@ -161,27 +175,31 @@ void Board::unmake_move(const Move& m)
         set_piece(m.captured, m.to);
     }
 
-    if (m.to == 6)  // white kingside
+    if (m.is_castling)
     {
-        remove_piece(5);    
-        set_piece(WR, 7);   
-    }
-    else if (m.to == 2)  // white queenside
-    {
-        remove_piece(3);
-        set_piece(WR, 0);
-    }
-    else if (m.to == 62)  // black kingside
-    {
-        remove_piece(61);
-        set_piece(BR, 63);
-    }
-    else if (m.to == 58)  // black queenside
-    {
-        remove_piece(59);
-        set_piece(BR, 56);
+        if (m.to == 6)  // white kingside
+        {
+            remove_piece(5);    
+            set_piece(WR, 7);   
+        }
+        else if (m.to == 2)  // white queenside
+        {
+            remove_piece(3);
+            set_piece(WR, 0);
+        }
+        else if (m.to == 62)  // black kingside
+        {
+            remove_piece(61);
+            set_piece(BR, 63);
+        }
+        else if (m.to == 58)  // black queenside
+        {
+            remove_piece(59);
+            set_piece(BR, 56);
+        }
     }
 
+    
 
     en_passant_sq = m.prev_en_passant_sq; // restore previous EP state
     WK_moved = m.prev_WK_moved;
@@ -208,5 +226,34 @@ void load_pieces(Board& board) {
         // Black back rank (same order, just different colour)
         Piece black_piece = (Piece)(back_rank[file] + 6); // offset by 6 to get black equivalent
         board.set_piece(black_piece, square_index(7, file));
+    }
+}
+
+void Board::verify_state()
+{
+    // Check squares[] -> bitboards
+    for (int sq = 0; sq < 64; sq++)
+    {
+        Piece p = squares[sq];
+        if (p != EMPTY)
+        {
+            if (!(pieces[p] & (1ULL << sq)))
+                std::cout << "MISMATCH: squares[" << sq << "]=" << p 
+                         << " but not in bitboard\n";
+        }
+    }
+    
+    // Check bitboards -> squares[] (NEW!)
+    for (int i = 1; i <= 12; i++)
+    {
+        uint64_t bb = pieces[i];
+        while (bb)
+        {
+            int sq = __builtin_ctzll(bb);
+            bb &= bb - 1;
+            if (squares[sq] != i)
+                std::cout << "MISMATCH: bitboard[" << i << "] has bit " << sq 
+                         << " but squares[" << sq << "]=" << squares[sq] << "\n";
+        }
     }
 }

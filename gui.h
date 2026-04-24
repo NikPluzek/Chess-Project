@@ -49,6 +49,8 @@ class ChessGUI
     //last move highlight
     int from_square = -1;
     int to_square = -1;
+
+    bool is_player_white = true;
 };
 
 #endif

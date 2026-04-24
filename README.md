@@ -4,4 +4,6 @@ to run it you must run:
 
 g++ main.cpp gui.cpp board.cpp movegen.cpp -IC:/SFML-2.6.1/include -LC:/SFML-2.6.1/lib -o ChessGUI -lsfml-graphics -lsfml-window -lsfml-system
 
+g++ main.cpp gui.cpp board.cpp movegen.cpp engine.cpp -IC:/SFML-2.6.1/include -LC:/SFML-2.6.1/lib -o ChessGUI -lsfml-graphics -lsfml-window -lsfml-system
+
 ./ChessGUI
