@@ -82,7 +82,8 @@ void Board::make_move(const Move& m)
     //en passant
     if (m.is_en_passant)
     {
-        int captured_pawn_sq = m.to + (white_to_move ? -8 : 8); // capture the pawn behind the destination square
+        // capture the pawn behind the destination square
+        int captured_pawn_sq = m.to + (white_to_move ? -8 : 8); 
         remove_piece(captured_pawn_sq);
     }
     // Step 2: If there's a piece to capture, remove it

@@ -1,0 +1,77 @@
+\doxysection{engine.\+h File Reference}
+\hypertarget{engine_8h}{}\label{engine_8h}\index{engine.h@{engine.h}}
+{\ttfamily \+\#include "{}board.\+h"{}}\newline
+{\ttfamily \+\#include "{}movegen.\+h"{}}\newline
+{\ttfamily \+\#include "{}move.\+h"{}}\newline
+Include dependency graph for engine.\+h:\+
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=319pt]{engine_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file:\+
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=283pt]{engine_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{engine_8h_a6928ca5136cf9e5528c36ee9214fcbac}{evaluate}} (const \doxymbox{\hyperlink{class_board}{Board}} \&board)
+\item 
+void \doxymbox{\hyperlink{engine_8h_ae2e44d6f24b33307d66d64ad45335dc9}{init\+\_\+pst}} ()
+\item 
+int \doxymbox{\hyperlink{engine_8h_ad8db0cf1ea65d3b199b74f765480b614}{minimax}} (\doxymbox{\hyperlink{class_board}{Board}} \&board, int depth, bool white\+\_\+turn)
+\item 
+\doxymbox{\hyperlink{struct_move}{Move}} \doxymbox{\hyperlink{engine_8h_a954a92a4921dc83526b30d92632e1cc5}{get\+\_\+best\+\_\+move}} (\doxymbox{\hyperlink{class_board}{Board}} \&board, int depth)
+\item 
+int \doxymbox{\hyperlink{engine_8h_a4130df9060832bca5bfe9d75aaa01b8b}{minimax\+\_\+ab}} (\doxymbox{\hyperlink{class_board}{Board}} \&board, int depth, bool white\+\_\+turn, int alpha, int beta)
+\item 
+\doxymbox{\hyperlink{struct_move}{Move}} \doxymbox{\hyperlink{engine_8h_abaa11a4e8c61a39a922607ed4ca01f31}{get\+\_\+best\+\_\+move\+\_\+ab}} (\doxymbox{\hyperlink{class_board}{Board}} \&board, int depth)
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{engine_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{engine_8h_a6928ca5136cf9e5528c36ee9214fcbac}\index{engine.h@{engine.h}!evaluate@{evaluate}}
+\index{evaluate@{evaluate}!engine.h@{engine.h}}
+\doxysubsubsection{\texorpdfstring{evaluate()}{evaluate()}}
+{\footnotesize\ttfamily \label{engine_8h_a6928ca5136cf9e5528c36ee9214fcbac} 
+int evaluate (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{}\end{DoxyParamCaption})}
+
+\Hypertarget{engine_8h_a954a92a4921dc83526b30d92632e1cc5}\index{engine.h@{engine.h}!get\_best\_move@{get\_best\_move}}
+\index{get\_best\_move@{get\_best\_move}!engine.h@{engine.h}}
+\doxysubsubsection{\texorpdfstring{get\_best\_move()}{get\_best\_move()}}
+{\footnotesize\ttfamily \label{engine_8h_a954a92a4921dc83526b30d92632e1cc5} 
+\doxymbox{\hyperlink{struct_move}{Move}} get\+\_\+best\+\_\+move (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{int}]{depth}{}\end{DoxyParamCaption})}
+
+\Hypertarget{engine_8h_abaa11a4e8c61a39a922607ed4ca01f31}\index{engine.h@{engine.h}!get\_best\_move\_ab@{get\_best\_move\_ab}}
+\index{get\_best\_move\_ab@{get\_best\_move\_ab}!engine.h@{engine.h}}
+\doxysubsubsection{\texorpdfstring{get\_best\_move\_ab()}{get\_best\_move\_ab()}}
+{\footnotesize\ttfamily \label{engine_8h_abaa11a4e8c61a39a922607ed4ca01f31} 
+\doxymbox{\hyperlink{struct_move}{Move}} get\+\_\+best\+\_\+move\+\_\+ab (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{int}]{depth}{}\end{DoxyParamCaption})}
+
+\Hypertarget{engine_8h_ae2e44d6f24b33307d66d64ad45335dc9}\index{engine.h@{engine.h}!init\_pst@{init\_pst}}
+\index{init\_pst@{init\_pst}!engine.h@{engine.h}}
+\doxysubsubsection{\texorpdfstring{init\_pst()}{init\_pst()}}
+{\footnotesize\ttfamily \label{engine_8h_ae2e44d6f24b33307d66d64ad45335dc9} 
+void init\+\_\+pst (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{engine_8h_ad8db0cf1ea65d3b199b74f765480b614}\index{engine.h@{engine.h}!minimax@{minimax}}
+\index{minimax@{minimax}!engine.h@{engine.h}}
+\doxysubsubsection{\texorpdfstring{minimax()}{minimax()}}
+{\footnotesize\ttfamily \label{engine_8h_ad8db0cf1ea65d3b199b74f765480b614} 
+int minimax (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{int}]{depth}{, }\item[{bool}]{white\+\_\+turn}{}\end{DoxyParamCaption})}
+
+\Hypertarget{engine_8h_a4130df9060832bca5bfe9d75aaa01b8b}\index{engine.h@{engine.h}!minimax\_ab@{minimax\_ab}}
+\index{minimax\_ab@{minimax\_ab}!engine.h@{engine.h}}
+\doxysubsubsection{\texorpdfstring{minimax\_ab()}{minimax\_ab()}}
+{\footnotesize\ttfamily \label{engine_8h_a4130df9060832bca5bfe9d75aaa01b8b} 
+int minimax\+\_\+ab (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{int}]{depth}{, }\item[{bool}]{white\+\_\+turn}{, }\item[{int}]{alpha}{, }\item[{int}]{beta}{}\end{DoxyParamCaption})}
+

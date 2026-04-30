@@ -1,0 +1,51 @@
+\doxysection{movegen.\+cpp File Reference}
+\hypertarget{movegen_8cpp}{}\label{movegen_8cpp}\index{movegen.cpp@{movegen.cpp}}
+{\ttfamily \+\#include "{}movegen.\+h"{}}\newline
+Include dependency graph for movegen.\+cpp:\+
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{movegen_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_move}{Move}} $>$ \doxymbox{\hyperlink{movegen_8cpp_a9639358ad398953e716432843337f0ee}{generate\+\_\+moves\+\_\+pseudolegal}} (const \doxymbox{\hyperlink{class_board}{Board}} \&board)
+\item 
+bool \doxymbox{\hyperlink{movegen_8cpp_a9e622633914ea8a17b669ae81c840682}{is\+\_\+square\+\_\+attacked\+\_\+by}} (const \doxymbox{\hyperlink{class_board}{Board}} \&board, int target\+\_\+sq, bool by\+\_\+white)
+\item 
+bool \doxymbox{\hyperlink{movegen_8cpp_a278106cb759f0cd44a560aa6434322c1}{is\+\_\+in\+\_\+check}} (const \doxymbox{\hyperlink{class_board}{Board}} \&board, bool is\+\_\+white)
+\item 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_move}{Move}} $>$ \doxymbox{\hyperlink{movegen_8cpp_a09c7546eb5603f2c2b8e63a2905aed95}{generate\+\_\+moves}} (const \doxymbox{\hyperlink{class_board}{Board}} \&board)
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{movegen_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{movegen_8cpp_a09c7546eb5603f2c2b8e63a2905aed95}\index{movegen.cpp@{movegen.cpp}!generate\_moves@{generate\_moves}}
+\index{generate\_moves@{generate\_moves}!movegen.cpp@{movegen.cpp}}
+\doxysubsubsection{\texorpdfstring{generate\_moves()}{generate\_moves()}}
+{\footnotesize\ttfamily \label{movegen_8cpp_a09c7546eb5603f2c2b8e63a2905aed95} 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_move}{Move}} $>$ generate\+\_\+moves (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{}\end{DoxyParamCaption})}
+
+\Hypertarget{movegen_8cpp_a9639358ad398953e716432843337f0ee}\index{movegen.cpp@{movegen.cpp}!generate\_moves\_pseudolegal@{generate\_moves\_pseudolegal}}
+\index{generate\_moves\_pseudolegal@{generate\_moves\_pseudolegal}!movegen.cpp@{movegen.cpp}}
+\doxysubsubsection{\texorpdfstring{generate\_moves\_pseudolegal()}{generate\_moves\_pseudolegal()}}
+{\footnotesize\ttfamily \label{movegen_8cpp_a9639358ad398953e716432843337f0ee} 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_move}{Move}} $>$ generate\+\_\+moves\+\_\+pseudolegal (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{}\end{DoxyParamCaption})}
+
+\Hypertarget{movegen_8cpp_a278106cb759f0cd44a560aa6434322c1}\index{movegen.cpp@{movegen.cpp}!is\_in\_check@{is\_in\_check}}
+\index{is\_in\_check@{is\_in\_check}!movegen.cpp@{movegen.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_in\_check()}{is\_in\_check()}}
+{\footnotesize\ttfamily \label{movegen_8cpp_a278106cb759f0cd44a560aa6434322c1} 
+bool is\+\_\+in\+\_\+check (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{bool}]{is\+\_\+white}{}\end{DoxyParamCaption})}
+
+\Hypertarget{movegen_8cpp_a9e622633914ea8a17b669ae81c840682}\index{movegen.cpp@{movegen.cpp}!is\_square\_attacked\_by@{is\_square\_attacked\_by}}
+\index{is\_square\_attacked\_by@{is\_square\_attacked\_by}!movegen.cpp@{movegen.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_square\_attacked\_by()}{is\_square\_attacked\_by()}}
+{\footnotesize\ttfamily \label{movegen_8cpp_a9e622633914ea8a17b669ae81c840682} 
+bool is\+\_\+square\+\_\+attacked\+\_\+by (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{class_board}{Board}} \&}]{board}{, }\item[{int}]{target\+\_\+sq}{, }\item[{bool}]{by\+\_\+white}{}\end{DoxyParamCaption})}
+

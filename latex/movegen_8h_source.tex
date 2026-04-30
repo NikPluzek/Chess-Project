@@ -1,0 +1,19 @@
+\doxysection{movegen.\+h}
+\hypertarget{movegen_8h_source}{}\label{movegen_8h_source}\doxymbox{\hyperlink{movegen_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ MOVEGEN\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ MOVEGEN\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{board_8h}{board.h}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{bitboard_8h}{bitboard.h}}"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{move_8h}{move.h}}"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ std::vector<Move>\ \doxymbox{\hyperlink{movegen_8h_a09c7546eb5603f2c2b8e63a2905aed95}{generate\_moves}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_board}{Board}}\&\ board);}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{movegen_8h_a9e622633914ea8a17b669ae81c840682}{is\_square\_attacked\_by}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_board}{Board}}\&\ board,\ \textcolor{keywordtype}{int}\ target\_sq,\ \textcolor{keywordtype}{bool}\ by\_white);}
+\DoxyCodeLine{00012\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{movegen_8h_a278106cb759f0cd44a560aa6434322c1}{is\_in\_check}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_board}{Board}}\&\ board,\ \textcolor{keywordtype}{bool}\ is\_white);}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

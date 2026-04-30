@@ -1,13 +1,13 @@
 #include "movegen.h"
 
-std::vector<Move> generate_moves_pseudolegal(const Board& board)
+std::vector<Move> generate_moves_pseudolegal(const Board &board)
 {
     std::vector<Move> moves;
 
     uint64_t friendly = board.white_to_move ? board.white_pieces : board.black_pieces;
     uint64_t enemy = board.white_to_move ? board.black_pieces : board.white_pieces;
 
-    // PAWNS 
+    // PAWNS
     if (board.white_to_move)
     {
         uint64_t pawns = board.pieces[WP];
@@ -111,12 +111,13 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
         }
     }
 
-    // KNIGHTS 
+    // KNIGHTS
     uint64_t knights = board.white_to_move ? board.pieces[WN] : board.pieces[BN];
     while (knights)
     {
         int sq = pop_lsb(knights);
         uint64_t attackMask = knight_attacks[sq] & ~friendly;
+        // all squares that the knight can attack that don't have friendly pieces
         while (attackMask)
         {
             int to = pop_lsb(attackMask);
@@ -129,7 +130,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
         }
     }
 
-    // ROOKS 
+    // ROOKS
     uint64_t rooks = board.white_to_move ? board.pieces[WR] : board.pieces[BR];
     while (rooks)
     {
@@ -165,7 +166,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
         }
     }
 
-    // QUEENS 
+    // QUEENS
     uint64_t queens = board.white_to_move ? board.pieces[WQ] : board.pieces[BQ];
     while (queens)
     {
@@ -183,7 +184,7 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
         }
     }
 
-    // KINGS 
+    // KINGS
     uint64_t kings = board.white_to_move ? board.pieces[WK] : board.pieces[BK];
     while (kings)
     {
@@ -200,15 +201,12 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
             moves.push_back(m);
         }
 
-        // Castling 
-        if (board.white_to_move){
+        // Castling
+        if (board.white_to_move)
+        {
             // White King Castling
-            if (board.WK_moved == false && board.WR_K_moved == false && board.piece_at(5) == EMPTY 
-            && board.piece_at(6) == EMPTY  
-            && !is_square_attacked_by(board, 4, !board.white_to_move) 
-            && !is_square_attacked_by(board, 5, !board.white_to_move) 
-            && !is_square_attacked_by(board, 6, !board.white_to_move))
-                {
+            if (board.WK_moved == false && board.WR_K_moved == false && board.piece_at(5) == EMPTY && board.piece_at(6) == EMPTY && !is_square_attacked_by(board, 4, !board.white_to_move) && !is_square_attacked_by(board, 5, !board.white_to_move) && !is_square_attacked_by(board, 6, !board.white_to_move))
+            {
                 Move m;
                 m.from = sq;
                 m.to = 6;
@@ -218,12 +216,8 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 moves.push_back(m);
             }
 
-            if (board.WK_moved == false && board.WR_Q_moved == false && board.piece_at(1) == EMPTY 
-            && board.piece_at(2) == EMPTY && board.piece_at(3) == EMPTY
-            && !is_square_attacked_by(board, 2, !board.white_to_move) 
-            && !is_square_attacked_by(board, 3, !board.white_to_move)
-            && !is_square_attacked_by(board, 4, !board.white_to_move))
-                {
+            if (board.WK_moved == false && board.WR_Q_moved == false && board.piece_at(1) == EMPTY && board.piece_at(2) == EMPTY && board.piece_at(3) == EMPTY && !is_square_attacked_by(board, 2, !board.white_to_move) && !is_square_attacked_by(board, 3, !board.white_to_move) && !is_square_attacked_by(board, 4, !board.white_to_move))
+            {
                 Move m;
                 m.from = sq;
                 m.to = 2;
@@ -233,14 +227,11 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 moves.push_back(m);
             }
         }
-        else{
+        else
+        {
             // Black King Castling
-            if (board.BK_moved == false && board.BR_K_moved == false && board.piece_at(61) == EMPTY 
-            && board.piece_at(62) == EMPTY  
-            && !is_square_attacked_by(board, 60, !board.white_to_move) 
-            && !is_square_attacked_by(board, 61, !board.white_to_move) 
-            && !is_square_attacked_by(board, 62, !board.white_to_move))
-                {
+            if (board.BK_moved == false && board.BR_K_moved == false && board.piece_at(61) == EMPTY && board.piece_at(62) == EMPTY && !is_square_attacked_by(board, 60, !board.white_to_move) && !is_square_attacked_by(board, 61, !board.white_to_move) && !is_square_attacked_by(board, 62, !board.white_to_move))
+            {
                 Move m;
                 m.from = sq;
                 m.to = 62;
@@ -250,12 +241,8 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 moves.push_back(m);
             }
 
-            if (board.BK_moved == false && board.BR_Q_moved == false && board.piece_at(57) == EMPTY 
-            && board.piece_at(58) == EMPTY && board.piece_at(59) == EMPTY
-            && !is_square_attacked_by(board, 57, !board.white_to_move) 
-            && !is_square_attacked_by(board, 58, !board.white_to_move)
-            && !is_square_attacked_by(board, 59, !board.white_to_move))
-                {
+            if (board.BK_moved == false && board.BR_Q_moved == false && board.piece_at(57) == EMPTY && board.piece_at(58) == EMPTY && board.piece_at(59) == EMPTY && !is_square_attacked_by(board, 57, !board.white_to_move) && !is_square_attacked_by(board, 58, !board.white_to_move) && !is_square_attacked_by(board, 59, !board.white_to_move))
+            {
                 Move m;
                 m.from = sq;
                 m.to = 58;
@@ -264,14 +251,14 @@ std::vector<Move> generate_moves_pseudolegal(const Board& board)
                 m.captured = EMPTY;
                 moves.push_back(m);
             }
-        }   
+        }
     }
-    
+
     return moves;
 }
 
 // Check if a square is attacked by pieces of a given side
-bool is_square_attacked_by(const Board& board, int target_sq, bool by_white)
+bool is_square_attacked_by(const Board &board, int target_sq, bool by_white)
 {
     // Check pawn attacks
     int sq_rank = target_sq / 8;
@@ -325,7 +312,7 @@ bool is_square_attacked_by(const Board& board, int target_sq, bool by_white)
 }
 
 // Check if a king is in check
-bool is_in_check(const Board& board, bool is_white)
+bool is_in_check(const Board &board, bool is_white)
 {
     int king_sq = is_white ? board.white_king_sq : board.black_king_sq;
 
@@ -336,19 +323,19 @@ bool is_in_check(const Board& board, bool is_white)
     return is_square_attacked_by(board, king_sq, enemy_white);
 }
 
-std::vector<Move> generate_moves(const Board& board)
+std::vector<Move> generate_moves(const Board &board)
 {
     std::vector<Move> pseudolegal = generate_moves_pseudolegal(board);
     std::vector<Move> legal;
 
-    for (const Move& m : pseudolegal)
+    for (const Move &m : pseudolegal)
     {
         // Make a copy of the board
         Board temp = board;
 
         // Execute the move on the copy
         Move m_copy = m;
-        m_copy.prev_en_passant_sq = board.en_passant_sq; 
+        m_copy.prev_en_passant_sq = board.en_passant_sq;
 
         m_copy.prev_WK_moved = board.WK_moved;
         m_copy.prev_WR_K_moved = board.WR_K_moved;

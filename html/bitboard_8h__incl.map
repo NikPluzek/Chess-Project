@@ -1,0 +1,9 @@
+<map id="bitboard.h" name="bitboard.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="86,5,164,32"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,80,66,107"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,32,64,72,61,68,107,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="89,80,160,107"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="127,31,127,65,122,63,123,35"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="185,80,238,107"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="141,30,188,70,182,70,139,35"/>
+</map>

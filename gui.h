@@ -5,6 +5,22 @@
 #include <SFML/Graphics.hpp>
 #include "move.h"
 
+enum ScreenState {
+    MENU,
+    SIDE_SELECTION,
+    PLAYING,
+    GAME_OVER
+};
+
+enum class GameOutcome {
+    Playing,
+    Checkmate,
+    Stalemate
+};
+
+const int WINDOW_WIDTH = 640;   // 8 tiles * 80 pixels
+const int WINDOW_HEIGHT = 640;  // 8 tiles * 80 pixels
+
 class ChessGUI
 {
   public:
@@ -29,6 +45,17 @@ class ChessGUI
     void draw_highlights();
     int mouse_to_square(int x, int y);
 
+    ScreenState current_state;
+    bool player_is_white;
+
+    void render_menu();
+    void render_side_selection();
+    void render_game();
+    void render_game_over();
+
+    void handle_menu_click(int mouse_x, int mouse_y);
+    void handle_side_selection_click(int mouse_x, int mouse_y);
+
     //loading piece PNGs
     sf::Texture textures[13];
     void load_textures();
@@ -41,16 +68,13 @@ class ChessGUI
     bool handle_promotion_click(int sq);
 
     //gameover
-    enum class GameState { Playing, Checkmate, Stalemate };
-    GameState gameState = GameState::Playing;
+    GameOutcome gameOutcome = GameOutcome::Playing;
     sf::Font font;
     void draw_game_over();
 
     //last move highlight
     int from_square = -1;
     int to_square = -1;
-
-    bool is_player_white = true;
 };
 
 #endif

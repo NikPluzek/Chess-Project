@@ -7,9 +7,59 @@
 #include <chrono>
 #include <iostream>
 
+struct Button {
+    sf::RectangleShape shape;
+    sf::Text text;
+    sf::FloatRect bounds;
+    
+    Button(const std::string& label, sf::Vector2f position, sf::Vector2f size, sf::Font& font)
+    {
+        shape.setSize(size);
+        shape.setPosition(position);
+        shape.setFillColor(sf::Color(70, 70, 70));
+        shape.setOutlineThickness(3);
+        shape.setOutlineColor(sf::Color(40, 40, 40));
+        
+        text.setFont(font);
+        text.setString(label);
+        text.setCharacterSize(28);
+        text.setFillColor(sf::Color::White);
+        
+        sf::FloatRect textBounds = text.getLocalBounds();
+        text.setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
+        text.setPosition(position.x + size.x / 2, position.y + size.y / 2 - 5);
+        
+        bounds = shape.getGlobalBounds();
+    }
+    
+    void setHovered(bool hovered)
+    {
+        if (hovered)
+            shape.setFillColor(sf::Color(100, 100, 100));
+        else
+            shape.setFillColor(sf::Color(70, 70, 70));
+    }
+    
+    bool contains(int x, int y)
+    {
+        return bounds.contains(x, y);
+    }
+    
+    void draw(sf::RenderWindow& window)
+    {
+        window.draw(shape);
+        window.draw(text);
+    }
+};
+
 ChessGUI::ChessGUI(Board& b) : board(b)
 {
-    window.create(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess", sf::Style::Default);
+    //window.create(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess", sf::Style::Default);
+    window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chess Game");
+
+    current_state = MENU;
+    player_is_white = true;
+
     window.setVisible(true);
     window.setPosition(sf::Vector2i(200, 200));
     window.setFramerateLimit(60);
@@ -30,126 +80,148 @@ void ChessGUI::run()
             if (event.type == sf::Event::MouseButtonPressed &&
                 event.mouseButton.button == sf::Mouse::Left)
             {
-                int sq = mouse_to_square(event.mouseButton.x, event.mouseButton.y);
-
-                if (sq == -1)
-                    continue;
-
-                Piece p = board.piece_at(sq);
-
-                if (awaiting_promotion)
-                {
-                    handle_promotion_click(sq);
+                if (current_state == MENU){
+                    handle_menu_click(event.mouseButton.x, event.mouseButton.y);
                     continue;
                 }
+                else if (current_state == SIDE_SELECTION){
+                    handle_side_selection_click(event.mouseButton.x, event.mouseButton.y);
+                }
+                else if (current_state == PLAYING){
 
-                // --- SELECT PIECE --- (first click)
-                if (!pieceSelected)
-                {
-                    if (p != EMPTY)
+                    int sq = mouse_to_square(event.mouseButton.x, event.mouseButton.y);
+
+
+                    if (sq == -1)
+                        continue;
+
+                    Piece p = board.piece_at(sq);
+
+                    if (awaiting_promotion)
                     {
-                        if ((board.white_to_move && p >= BP) || (!board.white_to_move && p <= WK))
-                            continue;
+                        handle_promotion_click(sq);
+                        continue;
+                    }
 
-                        selectedSquare = sq;
-                        selectedPiece = p;
-                        pieceSelected = true;
-
-                        auto moves = generate_moves(board);
-                        highlightedMoves = 0ULL;
-                        highlightedAttacks = 0ULL;
-
-                        for (const auto& m : moves)
+                    // --- SELECT PIECE --- (first click)
+                    if (!pieceSelected)
+                    {
+                        if (p != EMPTY)
                         {
-                            if (m.from == sq)
+                            if ((board.white_to_move && p >= BP) || (!board.white_to_move && p <= WK))
+                                continue;
+
+                            selectedSquare = sq;
+                            selectedPiece = p;
+                            pieceSelected = true;
+
+                            auto moves = generate_moves(board);
+                            highlightedMoves = 0ULL;
+                            highlightedAttacks = 0ULL;
+
+                            for (const auto& m : moves)
                             {
-                                if (m.captured == EMPTY || m.is_en_passant)
-                                    highlightedMoves |= (1ULL << m.to);
-                                else
-                                    highlightedAttacks |= (1ULL << m.to);
+                                if (m.from == sq)
+                                {
+                                    if (m.captured == EMPTY || m.is_en_passant)
+                                        highlightedMoves |= (1ULL << m.to);
+                                    else
+                                        highlightedAttacks |= (1ULL << m.to);
+                                }
                             }
                         }
                     }
-                }
-                // --- MOVE PIECE --- (second click)
-                else
-                {
-                    auto moves = generate_moves(board);
-
-                    for (const auto& m : moves)
+                    // --- MOVE PIECE --- (second click)
+                    else
                     {
-                        if (m.from == selectedSquare && m.to == sq)
+                        auto moves = generate_moves(board);
+
+                        for (const auto& m : moves)
                         {
-                            if ((m.piece == WP && m.to / 8 == 7) ||
-                                (m.piece == BP && m.to / 8 == 0))
+                            if (m.from == selectedSquare && m.to == sq)
                             {
-                                awaiting_promotion = true;
-                                pending_promotion_move = m;
-                                break;
-                            }
-                            else
-                            {
-                                board.make_move(m);
-                                from_square = m.from;
-                                to_square = m.to;
-
-                                // check endgame after human move
-                                auto next_moves = generate_moves(board);
-                                if (next_moves.empty())
+                                if ((m.piece == WP && m.to / 8 == 7) ||
+                                    (m.piece == BP && m.to / 8 == 0))
                                 {
-                                    if (is_in_check(board, board.white_to_move))
-                                        gameState = GameState::Checkmate;
-                                    else
-                                        gameState = GameState::Stalemate;
+                                    awaiting_promotion = true;
+                                    pending_promotion_move = m;
+                                    break;
                                 }
-
-                                // engine move
-                                bool engine_turn = (board.white_to_move != is_player_white);
-                                if (gameState == GameState::Playing && engine_turn)
+                                else
                                 {
-                                    auto start = std::chrono::high_resolution_clock::now();
-                                    Move engine_move = get_best_move_ab(board, 5);
-                                    auto end = std::chrono::high_resolution_clock::now();
-                                    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                                    std::cout << "Engine move time: " << duration.count() << " ms" << std::endl;
+                                    board.make_move(m);
+                                    from_square = m.from;
+                                    to_square = m.to;
 
-
-                                    board.make_move(engine_move);
-                                    from_square = engine_move.from;
-                                    to_square = engine_move.to;
-
-
-                                    auto engine_next = generate_moves(board);
-                                    if (engine_next.empty())
+                                    // check endgame after human move
+                                    auto next_moves = generate_moves(board);
+                                    if (next_moves.empty())
                                     {
                                         if (is_in_check(board, board.white_to_move))
-                                            gameState = GameState::Checkmate;
+                                            gameOutcome = GameOutcome::Checkmate;
                                         else
-                                            gameState = GameState::Stalemate;
+                                            gameOutcome = GameOutcome::Stalemate;
+                                    }
+
+                                    // engine move
+                                    bool engine_turn = (board.white_to_move != player_is_white);
+                                    if (gameOutcome == GameOutcome::Playing && engine_turn)
+                                    {
+                                        auto start = std::chrono::high_resolution_clock::now();
+                                        Move engine_move = get_best_move_ab(board, 5);
+                                        auto end = std::chrono::high_resolution_clock::now();
+                                        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                                        std::cout << "Engine move time: " << duration.count() << " ms" << std::endl;
+
+
+                                        board.make_move(engine_move);
+                                        from_square = engine_move.from;
+                                        to_square = engine_move.to;
+
+
+                                        auto engine_next = generate_moves(board);
+                                        if (engine_next.empty())
+                                        {
+                                            if (is_in_check(board, board.white_to_move))
+                                                gameOutcome = GameOutcome::Checkmate;
+                                            else
+                                                gameOutcome = GameOutcome::Stalemate;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    pieceSelected = false;
-                    selectedSquare = -1;
-                    selectedPiece = EMPTY;
-                    highlightedMoves = 0ULL;
-                    highlightedAttacks = 0ULL;
+                        pieceSelected = false;
+                        selectedSquare = -1;
+                        selectedPiece = EMPTY;
+                        highlightedMoves = 0ULL;
+                        highlightedAttacks = 0ULL;
+                    }
                 }
             }
         }
 
         // Draw
         window.clear(sf::Color::White);
-        draw_board();
-        draw_highlights();
-        draw_pieces();
-        if (awaiting_promotion)
-            draw_promotion_picker();
-        if (gameState != GameState::Playing)
-            draw_game_over();
+
+        if(current_state == MENU){
+            render_menu();
+        }
+        else if (current_state == SIDE_SELECTION){
+            render_side_selection();
+        }
+        else if (current_state == PLAYING){
+            draw_board();
+            draw_highlights();
+            draw_pieces();
+            if (awaiting_promotion)
+                draw_promotion_picker();
+            if (gameOutcome != GameOutcome::Playing)
+                draw_game_over();
+        }
+
+        
         window.display();
     }
 }
@@ -326,14 +398,14 @@ bool ChessGUI::handle_promotion_click(int sq)
     if (next_moves.empty())
     {
         if (is_in_check(board, board.white_to_move))
-            gameState = GameState::Checkmate;
+            gameOutcome = GameOutcome::Checkmate;
         else
-            gameState = GameState::Stalemate;
+            gameOutcome = GameOutcome::Stalemate;
     }
 
     // engine move after promotion
-    bool engine_turn = (board.white_to_move != is_player_white);
-    if (gameState == GameState::Playing && engine_turn)
+    bool engine_turn = (board.white_to_move != player_is_white);
+    if (gameOutcome == GameOutcome::Playing && engine_turn)
     {
         Move engine_move = get_best_move_ab(board, 5);
         board.make_move(engine_move);
@@ -344,9 +416,9 @@ bool ChessGUI::handle_promotion_click(int sq)
         if (engine_next.empty())
         {
             if (is_in_check(board, board.white_to_move))
-                gameState = GameState::Checkmate;
+                gameOutcome = GameOutcome::Checkmate;
             else
-                gameState = GameState::Stalemate;
+                gameOutcome = GameOutcome::Stalemate;
         }
     }
 
@@ -362,7 +434,7 @@ void ChessGUI::draw_game_over()
 
     sf::Text text;
     text.setFont(font);
-    text.setString(gameState == GameState::Checkmate ? "Checkmate!" : "Stalemate");
+    text.setString(gameOutcome == GameOutcome::Checkmate ? "Checkmate!" : "Stalemate");
     text.setCharacterSize(48);
     text.setFillColor(sf::Color::White);
     sf::FloatRect bounds = text.getLocalBounds();
@@ -372,7 +444,7 @@ void ChessGUI::draw_game_over()
 
     sf::Text sub;
     sub.setFont(font);
-    if (gameState == GameState::Checkmate)
+    if (gameOutcome == GameOutcome::Checkmate)
         sub.setString(board.white_to_move ? "Black wins!" : "White wins!");
     else
         sub.setString("Draw");
@@ -383,3 +455,123 @@ void ChessGUI::draw_game_over()
     sub.setPosition(tileSize * 4, tileSize * 4.5f);
     window.draw(sub);
 }
+
+void ChessGUI::render_menu()
+{
+    // Background gradient effect (two rectangles)
+    sf::RectangleShape bg1(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT / 2));
+    bg1.setPosition(0, 0);
+    bg1.setFillColor(sf::Color(240, 240, 240));
+    window.draw(bg1);
+    
+    sf::RectangleShape bg2(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT / 2));
+    bg2.setPosition(0, WINDOW_HEIGHT / 2);
+    bg2.setFillColor(sf::Color(220, 220, 220));
+    window.draw(bg2);
+    
+    // Title
+    sf::Text title;
+    title.setFont(font);
+    title.setString("Chess");
+    title.setCharacterSize(80);
+    title.setFillColor(sf::Color(40, 40, 40));
+    title.setStyle(sf::Text::Bold);
+    sf::FloatRect bounds = title.getLocalBounds();
+    title.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    title.setPosition(WINDOW_WIDTH / 2, 120);
+    window.draw(title);
+    
+    // Subtitle
+    sf::Text subtitle;
+    subtitle.setFont(font);
+    subtitle.setString("AI Chess Engine");
+    subtitle.setCharacterSize(24);
+    subtitle.setFillColor(sf::Color(100, 100, 100));
+    sf::FloatRect subBounds = subtitle.getLocalBounds();
+    subtitle.setOrigin(subBounds.width / 2.f, subBounds.height / 2.f);
+    subtitle.setPosition(WINDOW_WIDTH / 2, 190);
+    window.draw(subtitle);
+    
+    // New Game button
+    Button newGame("New Game", sf::Vector2f(170, 300), sf::Vector2f(300, 70), font);
+    
+    // Get mouse position for hover effect
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    newGame.setHovered(newGame.contains(mousePos.x, mousePos.y));
+    
+    newGame.draw(window);
+}
+
+void ChessGUI::handle_menu_click(int mouse_x, int mouse_y){
+    current_state = SIDE_SELECTION;
+}
+
+void ChessGUI::render_side_selection()
+{
+    // Background
+    sf::RectangleShape bg(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
+    bg.setFillColor(sf::Color(230, 230, 230));
+    window.draw(bg);
+    
+    // Title
+    sf::Text title;
+    title.setFont(font);
+    title.setString("Choose Your Color");
+    title.setCharacterSize(50);
+    title.setFillColor(sf::Color(40, 40, 40));
+    title.setStyle(sf::Text::Bold);
+    sf::FloatRect bounds = title.getLocalBounds();
+    title.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    title.setPosition(WINDOW_WIDTH / 2, 80);
+    window.draw(title);
+    
+    // White button (left side)
+    Button whiteBtn("Play as White", sf::Vector2f(60, 250), sf::Vector2f(240, 250), font);
+    
+    // Black button (right side)  
+    Button blackBtn("Play as Black", sf::Vector2f(340, 250), sf::Vector2f(240, 250), font);
+    
+    // Hover effects
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    whiteBtn.setHovered(whiteBtn.contains(mousePos.x, mousePos.y));
+    blackBtn.setHovered(blackBtn.contains(mousePos.x, mousePos.y));
+    
+    // Draw buttons
+    whiteBtn.draw(window);
+    blackBtn.draw(window);
+    
+    // Draw piece icons on buttons (optional - adds visual appeal)
+    if (textures[WK].getSize().x > 0)
+    {
+        sf::Sprite whiteKing(textures[WK]);
+        whiteKing.setPosition(140, 280);
+        window.draw(whiteKing);
+        
+        sf::Sprite blackKing(textures[BK]);
+        blackKing.setPosition(420, 280);
+        window.draw(blackKing);
+    }
+}
+
+void ChessGUI::handle_side_selection_click(int mouse_x, int mouse_y)
+{
+    // Left half = white, right half = black
+    if (mouse_x < WINDOW_WIDTH / 2)
+    {
+        player_is_white = true;
+    }
+    else
+    {
+        player_is_white = false;
+    }
+    
+    current_state = PLAYING;
+
+    if (!player_is_white){
+        Move engine_move = get_best_move_ab(board, 5);
+        board.make_move(engine_move);
+        from_square = engine_move.from;
+        to_square = engine_move.to;
+    }
+}
+

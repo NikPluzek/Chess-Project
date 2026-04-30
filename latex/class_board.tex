@@ -1,0 +1,235 @@
+\doxysection{Board Class Reference}
+\hypertarget{class_board}{}\label{class_board}\index{Board@{Board}}
+
+
+{\ttfamily \+\#include $<$board.\+h$>$}
+
+
+
+Collaboration diagram for Board:\+
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=186pt]{class_board__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_board_a9ee491d4fea680cf69b033374a9fdfcb}{Board}} ()
+\item 
+void \doxymbox{\hyperlink{class_board_af74f0d4b43e5aa3faea16d7c6407b05e}{clear}} ()
+\item 
+void \doxymbox{\hyperlink{class_board_a6221f550fdccf293ec180b9669e93700}{update\+\_\+occupancy}} ()
+\item 
+\doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} \doxymbox{\hyperlink{class_board_a296b83beac3d8f8ff92cbf61d516c8e5}{piece\+\_\+at}} (int sq) const
+\item 
+void \doxymbox{\hyperlink{class_board_a5d42b584b50074c5398ad998857d699d}{set\+\_\+piece}} (\doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} p, int sq)
+\item 
+void \doxymbox{\hyperlink{class_board_a08c4188ce38075b46c6abe90158015d6}{remove\+\_\+piece}} (int sq)
+\item 
+void \doxymbox{\hyperlink{class_board_a40a3efcaf20664e3dca7a75d1cec24e5}{make\+\_\+move}} (const \doxymbox{\hyperlink{struct_move}{Move}} \&m)
+\item 
+void \doxymbox{\hyperlink{class_board_a08a16db3146847a514fdb8f079787b5e}{unmake\+\_\+move}} (const \doxymbox{\hyperlink{struct_move}{Move}} \&m)
+\item 
+void \doxymbox{\hyperlink{class_board_a2b422e610cd0e009872d5a57223e4c02}{verify\+\_\+state}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+uint64\+\_\+t \doxymbox{\hyperlink{class_board_aeae95bc7fcb03f7a232353239b4ba2ee}{pieces}} \+[13]\+
+\item 
+uint64\+\_\+t \doxymbox{\hyperlink{class_board_a9fe660e3afec53e9be0933ed3ddfc574}{white\+\_\+pieces}}
+\item 
+uint64\+\_\+t \doxymbox{\hyperlink{class_board_a13e9effa64b0fe7de9050cb81e5b10e3}{black\+\_\+pieces}}
+\item 
+uint64\+\_\+t \doxymbox{\hyperlink{class_board_a762d06a8a11910e95a5e100a012e9d7e}{occupied}}
+\item 
+int \doxymbox{\hyperlink{class_board_af7cf72d325eb1b040869e1a465026ec0}{white\+\_\+king\+\_\+sq}}
+\item 
+int \doxymbox{\hyperlink{class_board_af6c281666f1a1ae8e785c1bdc962a12c}{black\+\_\+king\+\_\+sq}}
+\item 
+int \doxymbox{\hyperlink{class_board_a8347f051626756de68b46b3c65348e50}{en\+\_\+passant\+\_\+sq}} = -\/1
+\item 
+\doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} \doxymbox{\hyperlink{class_board_a899afab883107436c5ee6cb6c68c5489}{squares}} \+[64]\+
+\item 
+bool \doxymbox{\hyperlink{class_board_a0fbcf1ed513ecd78d573638ec68af7f9}{white\+\_\+to\+\_\+move}}
+\item 
+bool \doxymbox{\hyperlink{class_board_afdde9117bf4dea7107beaf2a0e7da18d}{WK\+\_\+moved}} = false
+\item 
+bool \doxymbox{\hyperlink{class_board_ab558c4137ac6c8757fcad47396e070a6}{WR\+\_\+\+K\+\_\+moved}} = false
+\item 
+bool \doxymbox{\hyperlink{class_board_ad782b61368dc12823e5d3eab19662fa1}{WR\+\_\+\+Q\+\_\+moved}} = false
+\item 
+bool \doxymbox{\hyperlink{class_board_adac9f0195b5fcb53935ca96fd6a807e2}{BK\+\_\+moved}} = false
+\item 
+bool \doxymbox{\hyperlink{class_board_a5c4ca0cc28411a4ae44f74aa979ca8bd}{BR\+\_\+\+K\+\_\+moved}} = false
+\item 
+bool \doxymbox{\hyperlink{class_board_afbb69e7ef8eade283f39f63eb5c55c40}{BR\+\_\+\+Q\+\_\+moved}} = false
+\end{DoxyCompactItemize}
+
+
+\label{doc-constructors}
+\Hypertarget{class_board_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_board_a9ee491d4fea680cf69b033374a9fdfcb}\index{Board@{Board}!Board@{Board}}
+\index{Board@{Board}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{Board()}{Board()}}
+{\footnotesize\ttfamily \label{class_board_a9ee491d4fea680cf69b033374a9fdfcb} 
+Board::\+\+Board (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\label{doc-func-members}
+\Hypertarget{class_board_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_board_af74f0d4b43e5aa3faea16d7c6407b05e}\index{Board@{Board}!clear@{clear}}
+\index{clear@{clear}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \label{class_board_af74f0d4b43e5aa3faea16d7c6407b05e} 
+void Board::\+clear (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_board_a40a3efcaf20664e3dca7a75d1cec24e5}\index{Board@{Board}!make\_move@{make\_move}}
+\index{make\_move@{make\_move}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{make\_move()}{make\_move()}}
+{\footnotesize\ttfamily \label{class_board_a40a3efcaf20664e3dca7a75d1cec24e5} 
+void Board::\+make\+\_\+move (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{struct_move}{Move}} \&}]{m}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_board_a296b83beac3d8f8ff92cbf61d516c8e5}\index{Board@{Board}!piece\_at@{piece\_at}}
+\index{piece\_at@{piece\_at}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{piece\_at()}{piece\_at()}}
+{\footnotesize\ttfamily \label{class_board_a296b83beac3d8f8ff92cbf61d516c8e5} 
+\doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} Board::\+piece\+\_\+at (\begin{DoxyParamCaption}\item[{int}]{sq}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{class_board_a08c4188ce38075b46c6abe90158015d6}\index{Board@{Board}!remove\_piece@{remove\_piece}}
+\index{remove\_piece@{remove\_piece}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{remove\_piece()}{remove\_piece()}}
+{\footnotesize\ttfamily \label{class_board_a08c4188ce38075b46c6abe90158015d6} 
+void Board::\+remove\+\_\+piece (\begin{DoxyParamCaption}\item[{int}]{sq}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_board_a5d42b584b50074c5398ad998857d699d}\index{Board@{Board}!set\_piece@{set\_piece}}
+\index{set\_piece@{set\_piece}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{set\_piece()}{set\_piece()}}
+{\footnotesize\ttfamily \label{class_board_a5d42b584b50074c5398ad998857d699d} 
+void Board::\+set\+\_\+piece (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}}]{p}{, }\item[{int}]{sq}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_board_a08a16db3146847a514fdb8f079787b5e}\index{Board@{Board}!unmake\_move@{unmake\_move}}
+\index{unmake\_move@{unmake\_move}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{unmake\_move()}{unmake\_move()}}
+{\footnotesize\ttfamily \label{class_board_a08a16db3146847a514fdb8f079787b5e} 
+void Board::\+unmake\+\_\+move (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{struct_move}{Move}} \&}]{m}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_board_a6221f550fdccf293ec180b9669e93700}\index{Board@{Board}!update\_occupancy@{update\_occupancy}}
+\index{update\_occupancy@{update\_occupancy}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{update\_occupancy()}{update\_occupancy()}}
+{\footnotesize\ttfamily \label{class_board_a6221f550fdccf293ec180b9669e93700} 
+void Board::\+update\+\_\+occupancy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_board_a2b422e610cd0e009872d5a57223e4c02}\index{Board@{Board}!verify\_state@{verify\_state}}
+\index{verify\_state@{verify\_state}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{verify\_state()}{verify\_state()}}
+{\footnotesize\ttfamily \label{class_board_a2b422e610cd0e009872d5a57223e4c02} 
+void Board::\+verify\+\_\+state (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\label{doc-variable-members}
+\Hypertarget{class_board_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_board_adac9f0195b5fcb53935ca96fd6a807e2}\index{Board@{Board}!BK\_moved@{BK\_moved}}
+\index{BK\_moved@{BK\_moved}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{BK\_moved}{BK\_moved}}
+{\footnotesize\ttfamily \label{class_board_adac9f0195b5fcb53935ca96fd6a807e2} 
+bool Board::\+\+BK\+\_\+moved = false}
+
+\Hypertarget{class_board_af6c281666f1a1ae8e785c1bdc962a12c}\index{Board@{Board}!black\_king\_sq@{black\_king\_sq}}
+\index{black\_king\_sq@{black\_king\_sq}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{black\_king\_sq}{black\_king\_sq}}
+{\footnotesize\ttfamily \label{class_board_af6c281666f1a1ae8e785c1bdc962a12c} 
+int Board::\+black\+\_\+king\+\_\+sq}
+
+\Hypertarget{class_board_a13e9effa64b0fe7de9050cb81e5b10e3}\index{Board@{Board}!black\_pieces@{black\_pieces}}
+\index{black\_pieces@{black\_pieces}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{black\_pieces}{black\_pieces}}
+{\footnotesize\ttfamily \label{class_board_a13e9effa64b0fe7de9050cb81e5b10e3} 
+uint64\+\_\+t Board::\+black\+\_\+pieces}
+
+\Hypertarget{class_board_a5c4ca0cc28411a4ae44f74aa979ca8bd}\index{Board@{Board}!BR\_K\_moved@{BR\_K\_moved}}
+\index{BR\_K\_moved@{BR\_K\_moved}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{BR\_K\_moved}{BR\_K\_moved}}
+{\footnotesize\ttfamily \label{class_board_a5c4ca0cc28411a4ae44f74aa979ca8bd} 
+bool Board::\+\+BR\+\_\+\+K\+\_\+moved = false}
+
+\Hypertarget{class_board_afbb69e7ef8eade283f39f63eb5c55c40}\index{Board@{Board}!BR\_Q\_moved@{BR\_Q\_moved}}
+\index{BR\_Q\_moved@{BR\_Q\_moved}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{BR\_Q\_moved}{BR\_Q\_moved}}
+{\footnotesize\ttfamily \label{class_board_afbb69e7ef8eade283f39f63eb5c55c40} 
+bool Board::\+\+BR\+\_\+\+Q\+\_\+moved = false}
+
+\Hypertarget{class_board_a8347f051626756de68b46b3c65348e50}\index{Board@{Board}!en\_passant\_sq@{en\_passant\_sq}}
+\index{en\_passant\_sq@{en\_passant\_sq}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{en\_passant\_sq}{en\_passant\_sq}}
+{\footnotesize\ttfamily \label{class_board_a8347f051626756de68b46b3c65348e50} 
+int Board::\+en\+\_\+passant\+\_\+sq = -\/1}
+
+\Hypertarget{class_board_a762d06a8a11910e95a5e100a012e9d7e}\index{Board@{Board}!occupied@{occupied}}
+\index{occupied@{occupied}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{occupied}{occupied}}
+{\footnotesize\ttfamily \label{class_board_a762d06a8a11910e95a5e100a012e9d7e} 
+uint64\+\_\+t Board::\+occupied}
+
+\Hypertarget{class_board_aeae95bc7fcb03f7a232353239b4ba2ee}\index{Board@{Board}!pieces@{pieces}}
+\index{pieces@{pieces}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{pieces}{pieces}}
+{\footnotesize\ttfamily \label{class_board_aeae95bc7fcb03f7a232353239b4ba2ee} 
+uint64\+\_\+t Board::\+pieces\+[13]\+}
+
+\Hypertarget{class_board_a899afab883107436c5ee6cb6c68c5489}\index{Board@{Board}!squares@{squares}}
+\index{squares@{squares}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{squares}{squares}}
+{\footnotesize\ttfamily \label{class_board_a899afab883107436c5ee6cb6c68c5489} 
+\doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}} Board::\+squares\+[64]\+}
+
+\Hypertarget{class_board_af7cf72d325eb1b040869e1a465026ec0}\index{Board@{Board}!white\_king\_sq@{white\_king\_sq}}
+\index{white\_king\_sq@{white\_king\_sq}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{white\_king\_sq}{white\_king\_sq}}
+{\footnotesize\ttfamily \label{class_board_af7cf72d325eb1b040869e1a465026ec0} 
+int Board::\+white\+\_\+king\+\_\+sq}
+
+\Hypertarget{class_board_a9fe660e3afec53e9be0933ed3ddfc574}\index{Board@{Board}!white\_pieces@{white\_pieces}}
+\index{white\_pieces@{white\_pieces}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{white\_pieces}{white\_pieces}}
+{\footnotesize\ttfamily \label{class_board_a9fe660e3afec53e9be0933ed3ddfc574} 
+uint64\+\_\+t Board::\+white\+\_\+pieces}
+
+\Hypertarget{class_board_a0fbcf1ed513ecd78d573638ec68af7f9}\index{Board@{Board}!white\_to\_move@{white\_to\_move}}
+\index{white\_to\_move@{white\_to\_move}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{white\_to\_move}{white\_to\_move}}
+{\footnotesize\ttfamily \label{class_board_a0fbcf1ed513ecd78d573638ec68af7f9} 
+bool Board::\+white\+\_\+to\+\_\+move}
+
+\Hypertarget{class_board_afdde9117bf4dea7107beaf2a0e7da18d}\index{Board@{Board}!WK\_moved@{WK\_moved}}
+\index{WK\_moved@{WK\_moved}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{WK\_moved}{WK\_moved}}
+{\footnotesize\ttfamily \label{class_board_afdde9117bf4dea7107beaf2a0e7da18d} 
+bool Board::\+\+WK\+\_\+moved = false}
+
+\Hypertarget{class_board_ab558c4137ac6c8757fcad47396e070a6}\index{Board@{Board}!WR\_K\_moved@{WR\_K\_moved}}
+\index{WR\_K\_moved@{WR\_K\_moved}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{WR\_K\_moved}{WR\_K\_moved}}
+{\footnotesize\ttfamily \label{class_board_ab558c4137ac6c8757fcad47396e070a6} 
+bool Board::\+\+WR\+\_\+\+K\+\_\+moved = false}
+
+\Hypertarget{class_board_ad782b61368dc12823e5d3eab19662fa1}\index{Board@{Board}!WR\_Q\_moved@{WR\_Q\_moved}}
+\index{WR\_Q\_moved@{WR\_Q\_moved}!Board@{Board}}
+\doxysubsubsection{\texorpdfstring{WR\_Q\_moved}{WR\_Q\_moved}}
+{\footnotesize\ttfamily \label{class_board_ad782b61368dc12823e5d3eab19662fa1} 
+bool Board::\+\+WR\+\_\+\+Q\+\_\+moved = false}
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{board_8h}{board.\+h}}\item 
+\doxymbox{\hyperlink{board_8cpp}{board.\+cpp}}\end{DoxyCompactItemize}

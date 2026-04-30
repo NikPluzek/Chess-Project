@@ -1,0 +1,85 @@
+\doxysection{gui.\+h}
+\hypertarget{gui_8h_source}{}\label{gui_8h_source}\doxymbox{\hyperlink{gui_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ GUI\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ GUI\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{board_8h}{board.h}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{move_8h}{move.h}}"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9b}{ScreenState}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba4c40e60bc71a32b924ce1f08d57f9721}{MENU}},}
+\DoxyCodeLine{00010\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba20308e7fd89dfcc49aae5b40b04219bd}{SIDE\_SELECTION}},}
+\DoxyCodeLine{00011\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9baf095245f5cebc27a97a124345269fed8}{PLAYING}},}
+\DoxyCodeLine{00012\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba871723195985a4ae22d7e10d99bf8a00}{GAME\_OVER}}}
+\DoxyCodeLine{00013\ \};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227}{GameOutcome}}\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227ac9dbb2b7c84159b632d71e512eba8428}{Playing}},}
+\DoxyCodeLine{00017\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227af45c778ffeaf9c54b63cb613412594a9}{Checkmate}},}
+\DoxyCodeLine{00018\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227acf707b8fe61c9f34bbb3750574420a41}{Stalemate}}}
+\DoxyCodeLine{00019\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{gui_8h_a5e6ce0dd58078611570510dc4b8d81f3}{WINDOW\_WIDTH}}\ =\ 640;\ \ \ \textcolor{comment}{//\ 8\ tiles\ *\ 80\ pixels}}
+\DoxyCodeLine{00022\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{gui_8h_ab76d138fa589df9a65fc05eb3bd56073}{WINDOW\_HEIGHT}}\ =\ 640;\ \ \textcolor{comment}{//\ 8\ tiles\ *\ 80\ pixels}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_chess_g_u_i_a83b0d520b117c30131f13303622712cc}{ChessGUI}}}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \doxymbox{\hyperlink{class_chess_g_u_i_a83b0d520b117c30131f13303622712cc}{ChessGUI}}(\doxymbox{\hyperlink{class_board}{Board}}\&\ board);}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_chess_g_u_i_aca4df7aa93dbedd3a9e343c51cf58092}{run}}();}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00031\ \ \ \ \ \doxymbox{\hyperlink{class_board}{Board}}\&\ board;}
+\DoxyCodeLine{00032\ \ \ \ \ sf::RenderWindow\ window;}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{int}\ tileSize\ =\ 80;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{int}\ selectedSquare\ =\ -\/1;}
+\DoxyCodeLine{00036\ \ \ \ \ uint64\_t\ highlightedMoves\ =\ 0ULL;}
+\DoxyCodeLine{00037\ \ \ \ \ uint64\_t\ highlightedAttacks\ =\ 0ULL;}
+\DoxyCodeLine{00038\ \ \ \ \ uint64\_t\ legalMoves\ =\ 0ULL;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{bool}\ pieceSelected\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00041\ \ \ \ \ \doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314e}{Piece}}\ selectedPiece\ =\ \doxymbox{\hyperlink{board_8h_ade35c903123b92bed5cc7b84e6a1314ea2f0d18fc0d0fa4a6cd92dc328501874d}{EMPTY}};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ draw\_board();}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ draw\_pieces();}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{void}\ draw\_highlights();}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{int}\ mouse\_to\_square(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9b}{ScreenState}}\ current\_state;}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{bool}\ player\_is\_white;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{void}\ render\_menu();}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ render\_side\_selection();}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ render\_game();}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ render\_game\_over();}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{void}\ handle\_menu\_click(\textcolor{keywordtype}{int}\ mouse\_x,\ \textcolor{keywordtype}{int}\ mouse\_y);}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ handle\_side\_selection\_click(\textcolor{keywordtype}{int}\ mouse\_x,\ \textcolor{keywordtype}{int}\ mouse\_y);}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{comment}{//loading\ piece\ PNGs}}
+\DoxyCodeLine{00060\ \ \ \ \ sf::Texture\ textures[13];}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{void}\ load\_textures();}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{comment}{//promotion\ menu}}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{bool}\ awaiting\_promotion\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00065\ \ \ \ \ \doxymbox{\hyperlink{struct_move}{Move}}\ pending\_promotion\_move;}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ draw\_promotion\_picker();}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{bool}\ handle\_promotion\_click(\textcolor{keywordtype}{int}\ sq);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{comment}{//gameover}}
+\DoxyCodeLine{00071\ \ \ \ \ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227}{GameOutcome}}\ gameOutcome\ =\ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227ac9dbb2b7c84159b632d71e512eba8428}{GameOutcome::Playing}};}
+\DoxyCodeLine{00072\ \ \ \ \ sf::Font\ font;}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ draw\_game\_over();}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//last\ move\ highlight}}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{int}\ from\_square\ =\ -\/1;}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordtype}{int}\ to\_square\ =\ -\/1;}
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

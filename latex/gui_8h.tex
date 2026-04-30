@@ -1,0 +1,127 @@
+\doxysection{gui.\+h File Reference}
+\hypertarget{gui_8h}{}\label{gui_8h}\index{gui.h@{gui.h}}
+{\ttfamily \+\#include "{}board.\+h"{}}\newline
+{\ttfamily \+\#include $<$SFML/\+\+Graphics.\+hpp$>$}\newline
+{\ttfamily \+\#include "{}move.\+h"{}}\newline
+Include dependency graph for gui.\+h:\+
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=262pt]{gui_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file:\+
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=292pt]{gui_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_chess_g_u_i}{Chess\+GUI}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9b}{Screen\+State}} \{ \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba4c40e60bc71a32b924ce1f08d57f9721}{MENU}}
+, \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba20308e7fd89dfcc49aae5b40b04219bd}{SIDE\+\_\+\+SELECTION}}
+, \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9baf095245f5cebc27a97a124345269fed8}{PLAYING}}
+, \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba871723195985a4ae22d7e10d99bf8a00}{GAME\+\_\+\+OVER}}
+ \}
+\item 
+enum class \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227}{Game\+Outcome}} \{ \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227ac9dbb2b7c84159b632d71e512eba8428}{Playing}}
+, \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227af45c778ffeaf9c54b63cb613412594a9}{Checkmate}}
+, \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227acf707b8fe61c9f34bbb3750574420a41}{Stalemate}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \doxymbox{\hyperlink{gui_8h_a5e6ce0dd58078611570510dc4b8d81f3}{WINDOW\+\_\+\+WIDTH}} = 640
+\item 
+const int \doxymbox{\hyperlink{gui_8h_ab76d138fa589df9a65fc05eb3bd56073}{WINDOW\+\_\+\+HEIGHT}} = 640
+\end{DoxyCompactItemize}
+
+
+\label{doc-enum-members}
+\Hypertarget{gui_8h_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{gui_8h_a0bffae93324ed69979bdd0ab90df7227}\index{gui.h@{gui.h}!GameOutcome@{GameOutcome}}
+\index{GameOutcome@{GameOutcome}!gui.h@{gui.h}}
+\doxysubsubsection{\texorpdfstring{GameOutcome}{GameOutcome}}
+{\footnotesize\ttfamily \label{gui_8h_a0bffae93324ed69979bdd0ab90df7227} 
+enum class \doxymbox{\hyperlink{gui_8h_a0bffae93324ed69979bdd0ab90df7227}{Game\+Outcome}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Playing@{Playing}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!Playing@{Playing}}
+}\Hypertarget{gui_8h_a0bffae93324ed69979bdd0ab90df7227ac9dbb2b7c84159b632d71e512eba8428}\label{gui_8h_a0bffae93324ed69979bdd0ab90df7227ac9dbb2b7c84159b632d71e512eba8428} 
+Playing&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Checkmate@{Checkmate}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!Checkmate@{Checkmate}}
+}\Hypertarget{gui_8h_a0bffae93324ed69979bdd0ab90df7227af45c778ffeaf9c54b63cb613412594a9}\label{gui_8h_a0bffae93324ed69979bdd0ab90df7227af45c778ffeaf9c54b63cb613412594a9} 
+Checkmate&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Stalemate@{Stalemate}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!Stalemate@{Stalemate}}
+}\Hypertarget{gui_8h_a0bffae93324ed69979bdd0ab90df7227acf707b8fe61c9f34bbb3750574420a41}\label{gui_8h_a0bffae93324ed69979bdd0ab90df7227acf707b8fe61c9f34bbb3750574420a41} 
+Stalemate&\\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{gui_8h_a5fc5d61fa8521ce5476183998579fa9b}\index{gui.h@{gui.h}!ScreenState@{ScreenState}}
+\index{ScreenState@{ScreenState}!gui.h@{gui.h}}
+\doxysubsubsection{\texorpdfstring{ScreenState}{ScreenState}}
+{\footnotesize\ttfamily \label{gui_8h_a5fc5d61fa8521ce5476183998579fa9b} 
+enum \doxymbox{\hyperlink{gui_8h_a5fc5d61fa8521ce5476183998579fa9b}{Screen\+State}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MENU@{MENU}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!MENU@{MENU}}
+}\Hypertarget{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba4c40e60bc71a32b924ce1f08d57f9721}\label{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba4c40e60bc71a32b924ce1f08d57f9721} 
+MENU&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SIDE\_SELECTION@{SIDE\_SELECTION}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!SIDE\_SELECTION@{SIDE\_SELECTION}}
+}\Hypertarget{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba20308e7fd89dfcc49aae5b40b04219bd}\label{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba20308e7fd89dfcc49aae5b40b04219bd} 
+SIDE\+\_\+\+SELECTION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PLAYING@{PLAYING}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!PLAYING@{PLAYING}}
+}\Hypertarget{gui_8h_a5fc5d61fa8521ce5476183998579fa9baf095245f5cebc27a97a124345269fed8}\label{gui_8h_a5fc5d61fa8521ce5476183998579fa9baf095245f5cebc27a97a124345269fed8} 
+PLAYING&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GAME\_OVER@{GAME\_OVER}!gui.h@{gui.h}}
+\index{gui.h@{gui.h}!GAME\_OVER@{GAME\_OVER}}
+}\Hypertarget{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba871723195985a4ae22d7e10d99bf8a00}\label{gui_8h_a5fc5d61fa8521ce5476183998579fa9ba871723195985a4ae22d7e10d99bf8a00} 
+GAME\+\_\+\+OVER&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\label{doc-var-members}
+\Hypertarget{gui_8h_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{gui_8h_ab76d138fa589df9a65fc05eb3bd56073}\index{gui.h@{gui.h}!WINDOW\_HEIGHT@{WINDOW\_HEIGHT}}
+\index{WINDOW\_HEIGHT@{WINDOW\_HEIGHT}!gui.h@{gui.h}}
+\doxysubsubsection{\texorpdfstring{WINDOW\_HEIGHT}{WINDOW\_HEIGHT}}
+{\footnotesize\ttfamily \label{gui_8h_ab76d138fa589df9a65fc05eb3bd56073} 
+const int WINDOW\+\_\+\+HEIGHT = 640}
+
+\Hypertarget{gui_8h_a5e6ce0dd58078611570510dc4b8d81f3}\index{gui.h@{gui.h}!WINDOW\_WIDTH@{WINDOW\_WIDTH}}
+\index{WINDOW\_WIDTH@{WINDOW\_WIDTH}!gui.h@{gui.h}}
+\doxysubsubsection{\texorpdfstring{WINDOW\_WIDTH}{WINDOW\_WIDTH}}
+{\footnotesize\ttfamily \label{gui_8h_a5e6ce0dd58078611570510dc4b8d81f3} 
+const int WINDOW\+\_\+\+WIDTH = 640}
+

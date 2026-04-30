@@ -1,0 +1,24 @@
+<map id="example.cpp" name="example.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="164,5,259,32"/>
+<area shape="rect" id="Node000002" href="$bitboard_8h.html" title=" " alt="" coords="59,80,137,107"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,35,133,73,129,69,194,30"/>
+<area shape="rect" id="Node000006" href="$board_8h.html" title=" " alt="" coords="205,229,269,256"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="215,31,237,215,231,214,211,34"/>
+<area shape="rect" id="Node000008" href="$gui_8h.html" title=" " alt="" coords="296,80,346,107"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="231,30,292,71,287,72,231,35"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="55,304,115,331"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="66,110,39,128,26,141,15,156,9,174,9,192,19,229,40,263,64,292,59,294,36,266,14,231,3,192,4,173,11,153,22,138,36,124,69,105"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="25,155,97,181"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="91,110,77,142,72,140,93,105"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="121,155,174,181"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="107,105,133,141,128,142,107,110"/>
+<area shape="poly" id="edge7_Node000006_Node000003" title=" " alt="" coords="213,256,126,299,124,294,208,257"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="212,304,262,331"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="239,255,239,290,235,287,235,258"/>
+<area shape="poly" id="edge9_Node000008_Node000006" title=" " alt="" coords="316,106,254,218,249,214,312,109"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="300,155,438,181"/>
+<area shape="poly" id="edge10_Node000008_Node000009" title=" " alt="" coords="330,105,355,142,350,141,329,110"/>
+<area shape="rect" id="Node000010" href="$move_8h.html" title=" " alt="" coords="462,155,526,181"/>
+<area shape="poly" id="edge11_Node000008_Node000010" title=" " alt="" coords="346,102,453,148,447,149,346,108"/>
+<area shape="poly" id="edge12_Node000010_Node000006" title=" " alt="" coords="459,179,285,231,283,226,464,177"/>
+</map>
