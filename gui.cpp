@@ -150,6 +150,7 @@ void ChessGUI::run()
                                 else
                                 {
                                     board.make_move(m);
+                                    board.push_history();
                                     from_square = m.from;
                                     to_square = m.to;
 
@@ -161,6 +162,10 @@ void ChessGUI::run()
                                             gameOutcome = GameOutcome::Checkmate;
                                         else
                                             gameOutcome = GameOutcome::Stalemate;
+                                    }
+                                    else if (board.is_threefold_repetition())  
+                                    {
+                                        gameOutcome = GameOutcome::Draw;
                                     }
 
                                     // engine move
@@ -175,6 +180,7 @@ void ChessGUI::run()
 
 
                                         board.make_move(engine_move);
+                                        board.push_history();
                                         from_square = engine_move.from;
                                         to_square = engine_move.to;
 
@@ -389,6 +395,7 @@ bool ChessGUI::handle_promotion_click(int sq)
         return false;
 
     board.make_move(pending_promotion_move);
+    board.push_history();
     from_square = pending_promotion_move.from;
     to_square = pending_promotion_move.to;
     awaiting_promotion = false;
@@ -409,6 +416,7 @@ bool ChessGUI::handle_promotion_click(int sq)
     {
         Move engine_move = get_best_move_ab(board, 5);
         board.make_move(engine_move);
+        board.push_history();
         from_square = engine_move.from;
         to_square = engine_move.to;
 
@@ -434,7 +442,14 @@ void ChessGUI::draw_game_over()
 
     sf::Text text;
     text.setFont(font);
-    text.setString(gameOutcome == GameOutcome::Checkmate ? "Checkmate!" : "Stalemate");
+    std::string result;
+    if (gameOutcome == GameOutcome::Checkmate)
+        result = "Checkmate!";
+    else if (gameOutcome == GameOutcome::Stalemate)
+        result = "Stalemate!";
+    else if (gameOutcome == GameOutcome::Draw)
+        result = "Draw!";
+    text.setString(result);
     text.setCharacterSize(48);
     text.setFillColor(sf::Color::White);
     sf::FloatRect bounds = text.getLocalBounds();
@@ -484,7 +499,7 @@ void ChessGUI::render_menu()
     // Subtitle
     sf::Text subtitle;
     subtitle.setFont(font);
-    subtitle.setString("AI Chess Engine");
+    subtitle.setString("AI Chess Engine By Nikodem Pluzek");
     subtitle.setCharacterSize(24);
     subtitle.setFillColor(sf::Color(100, 100, 100));
     sf::FloatRect subBounds = subtitle.getLocalBounds();
@@ -493,7 +508,7 @@ void ChessGUI::render_menu()
     window.draw(subtitle);
     
     // New Game button
-    Button newGame("New Game", sf::Vector2f(170, 300), sf::Vector2f(300, 70), font);
+    Button newGame("Jub is a baka! ^_^", sf::Vector2f(170, 300), sf::Vector2f(300, 70), font);
     
     // Get mouse position for hover effect
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -516,7 +531,7 @@ void ChessGUI::render_side_selection()
     // Title
     sf::Text title;
     title.setFont(font);
-    title.setString("Choose Your Color");
+    title.setString("Choose Your Colour");
     title.setCharacterSize(50);
     title.setFillColor(sf::Color(40, 40, 40));
     title.setStyle(sf::Text::Bold);
@@ -570,6 +585,7 @@ void ChessGUI::handle_side_selection_click(int mouse_x, int mouse_y)
     if (!player_is_white){
         Move engine_move = get_best_move_ab(board, 5);
         board.make_move(engine_move);
+        board.push_history();
         from_square = engine_move.from;
         to_square = engine_move.to;
     }

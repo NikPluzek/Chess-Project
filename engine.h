@@ -16,4 +16,10 @@ Move get_best_move(Board& board, int depth);
 int minimax_ab(Board& board, int depth, bool white_turn, int alpha, int beta);
 Move get_best_move_ab(Board& board, int depth);
 
+// move ordering
+int score_move(const Move& m);
+
+//quiescence search
+int quiescence(Board& board, int alpha, int beta, bool white_turn, int q_depth = 0);
+
 #endif

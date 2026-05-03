@@ -1,4 +1,6 @@
 #include "engine.h"
+#include <algorithm>  
+#include <cstdlib> 
 
 int piece_values[13] = {
     0,   // EMPTY
@@ -183,9 +185,45 @@ void init_pst()
     }
 }
 
+int score_move(const Move& m){
+    // implementing MVV-LVA
+    if (m.captured != EMPTY){
+        int victim_value = std::abs(piece_values[m.captured]);
+        int attacker_value = std::abs(piece_values[m.piece]);
+
+        // prioritise valuable victim and weak attacker
+        return 10000 + (victim_value *10) - attacker_value;
+    }
+
+    if (m.is_en_passant){
+        return 10000 + (100 * 10) - 100;  
+    }
+
+    if (m.promotion != EMPTY){
+        return 9000 + std::abs(piece_values[m.promotion]);
+    }
+
+    return 0; // non-capture moves are least valuable
+}
+
 int evaluate(const Board& board)
 {
     int score = 0;
+
+    //endgame detection
+    int white_material = 0;
+    int black_material = 0;
+    white_material += __builtin_popcountll(board.pieces[WN]) * 300;
+    white_material += __builtin_popcountll(board.pieces[WB]) * 300;
+    white_material += __builtin_popcountll(board.pieces[WR]) * 500;
+    white_material += __builtin_popcountll(board.pieces[WQ]) * 900;
+    black_material += __builtin_popcountll(board.pieces[BN]) * 300;
+    black_material += __builtin_popcountll(board.pieces[BB]) * 300;
+    black_material += __builtin_popcountll(board.pieces[BR]) * 500;
+    black_material += __builtin_popcountll(board.pieces[BQ]) * 900;
+
+    bool endgame = (white_material + black_material) <= 2000;
+
     for (int i = 1; i <= 12; i++)
     {
         uint64_t pieces = board.pieces[i];
@@ -203,6 +241,21 @@ int evaluate(const Board& board)
             if (i == BN || i == BB || i == BR) {  // Added BR
                 if (rank == 7) score += 15;  // Black pieces on rank 8
             }
+
+            //pushing pawns in endgame
+            if (endgame)
+            {
+                if (i == WP)
+                {
+                    //bonus increases the further the pawn has advanced
+                    score += rank * 15; 
+                }
+                if (i == BP)
+                {
+                    //black pawns advance toward rank 1
+                    score -= (7 - rank) * 15;
+                }
+            }
         }
     }
     return score;
@@ -211,6 +264,11 @@ int evaluate(const Board& board)
 Move get_best_move(Board& board, int depth)
 {
     auto moves = generate_moves(board);
+
+    std::sort(moves.begin(), moves.end(), [](const Move& a, const Move& b) {
+        return score_move(a) > score_move(b);
+    });
+
     Move best_move = moves[0]; // default to first move
     bool is_white = board.white_to_move;
     int best_score = is_white ? -99999 : 99999;
@@ -318,12 +376,17 @@ Move get_best_move_ab(Board& board, int depth)
 
 int minimax_ab(Board& board, int depth, bool white_turn, int alpha, int beta)
 {
+    
     // base case 1: depth reached
     if (depth == 0)
-        return evaluate(board);
+        return quiescence(board, alpha, beta, white_turn);
 
     // generate moves
     auto moves = generate_moves(board);
+
+    std::sort(moves.begin(), moves.end(), [](const Move& a, const Move& b) {
+        return score_move(a) > score_move(b);
+    });
     
     // base case 2 & 3: no legal moves
     if (moves.empty())
@@ -364,4 +427,59 @@ int minimax_ab(Board& board, int depth, bool white_turn, int alpha, int beta)
         }
         return beta;
     }
+}
+
+int quiescence(Board& board, int alpha, int beta, bool white_turn, int q_depth){
+    
+    // Safety limit 
+    if (q_depth > 6)
+        return evaluate(board);
+    
+    // stand pat score
+    int stand_pat = evaluate(board);
+
+    if (white_turn){
+        if (stand_pat >= beta)
+            return beta;
+        if (stand_pat > alpha)
+            alpha = stand_pat;
+    }
+    else{
+        if (stand_pat <= alpha)
+            return alpha;
+        if (stand_pat < beta)
+            beta = stand_pat;
+    }
+    
+    auto moves = generate_moves(board);
+
+    std::sort(moves.begin(), moves.end(), [](const Move& a, const Move& b) {
+        return score_move(a) > score_move(b);
+    });
+
+    for (const Move& m : moves){
+        if (m.captured == EMPTY && !m.is_en_passant)
+            continue;
+        
+        board.make_move(m);
+        int score = quiescence(board, alpha, beta, !white_turn, q_depth + 1);
+        board.unmake_move(m);
+
+        if (white_turn)
+        {
+            if (score > alpha)
+                alpha = score;
+            if (alpha >= beta)
+                return beta;
+        }
+        else
+        {
+            if (score < beta)
+                beta = score;
+            if (beta <= alpha)
+                return alpha;
+        }
+    }
+
+    return white_turn ? alpha : beta;
 }

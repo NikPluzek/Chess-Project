@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 enum Piece
 {
@@ -50,6 +51,13 @@ class Board
     bool BR_K_moved = false;
     bool BR_Q_moved = false;
     void verify_state();
+
+    // draw by repetition
+    std::vector<uint64_t> position_history;  
+    
+    uint64_t compute_hash() const;  
+    void push_history();            
+    bool is_threefold_repetition() const; 
     
 
 };

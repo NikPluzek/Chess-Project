@@ -258,3 +258,31 @@ void Board::verify_state()
         }
     }
 }
+
+uint64_t Board::compute_hash() const
+{
+    uint64_t hash = 0;
+    for (int i = 1; i <= 12; i++)
+        hash ^= pieces[i] * (uint64_t)(i * 2654435761ULL);
+    hash ^= white_to_move ? 0xF0F0F0F0F0F0F0F0ULL : 0;
+    return hash;
+}
+
+void Board::push_history()
+{
+    position_history.push_back(compute_hash());
+}
+
+bool Board::is_threefold_repetition() const
+{
+    uint64_t current = compute_hash();
+    int count = 0;
+    for (uint64_t h : position_history)
+    {
+        if (h == current)
+            count++;
+        if (count >= 3)
+            return true;
+    }
+    return false;
+}

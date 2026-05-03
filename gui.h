@@ -15,7 +15,8 @@ enum ScreenState {
 enum class GameOutcome {
     Playing,
     Checkmate,
-    Stalemate
+    Stalemate,
+    Draw 
 };
 
 const int WINDOW_WIDTH = 640;   // 8 tiles * 80 pixels
