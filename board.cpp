@@ -26,16 +26,13 @@ Piece Board::piece_at(int sq) const
 
 void Board::set_piece(Piece p, int sq)
 {
-    // Clear from ALL bitboards first
     for (int i = 1; i <= 12; i++)
         pieces[i] &= ~(1ULL << sq);
     
-    // ADD THESE THREE LINES:
     white_pieces &= ~(1ULL << sq);
     black_pieces &= ~(1ULL << sq);
     occupied &= ~(1ULL << sq);
     
-    // NOW set the piece
     pieces[p] |= (1ULL << sq);
     squares[sq] = p;
 
@@ -60,7 +57,6 @@ void Board::remove_piece(int sq)
 
     pieces[p] &= ~(1ULL << sq);
     
-    // CRITICAL FIX: Clear this square from ALL piece bitboards
     for (int i = 1; i <= 12; i++)
         pieces[i] &= ~(1ULL << sq);
     
@@ -76,7 +72,7 @@ void Board::remove_piece(int sq)
 
 void Board::make_move(const Move& m)
 {
-    // Step 1: Remove piece from source square
+    // remove piece from source square
     remove_piece(m.from);
     
     //en passant
@@ -86,13 +82,13 @@ void Board::make_move(const Move& m)
         int captured_pawn_sq = m.to + (white_to_move ? -8 : 8); 
         remove_piece(captured_pawn_sq);
     }
-    // Step 2: If there's a piece to capture, remove it
+    // if there's a piece to capture, remove it
     else if (m.captured != EMPTY)
     {
         remove_piece(m.to);
     }
     
-    // Step 3: Place the moving piece at destination
+    // place the moving piece at destination
     if (m.promotion == EMPTY)
     {  
         set_piece(m.piece, m.to);  
@@ -102,7 +98,7 @@ void Board::make_move(const Move& m)
         set_piece(m.promotion, m.to);  
     }
     
-    // Step 4: Handle en passant target square
+    // handle en passant target square
     bool is_pawn = (m.piece == WP || m.piece == BP);
     int rank_diff = (m.to / 8) - (m.from / 8);
     if (is_pawn && (rank_diff == 2 || rank_diff == -2)){
@@ -112,7 +108,7 @@ void Board::make_move(const Move& m)
         en_passant_sq = -1; // reset if not a double pawn move
     }
 
-    // step 5: handle castling rights
+    // handle castling rights
     if (m.piece == WK){
         WK_moved = true;
     }
@@ -128,7 +124,7 @@ void Board::make_move(const Move& m)
         else if (m.from == square_index(7, 7)) BR_K_moved = true;
     }
 
-    // Handle castling move
+    // handle castling move
     if (m.is_castling)
     {
         if (m.to == 6)  // white kingside
@@ -153,7 +149,6 @@ void Board::make_move(const Move& m)
         }
     }
 
-    // Step 6: Switch whose turn it is
     white_to_move = !white_to_move;
 }
 
@@ -166,7 +161,7 @@ void Board::unmake_move(const Move& m)
 
     if (m.is_en_passant)
     {
-        // Restore the captured pawn on its original square
+        // restore the captured pawn on its original square
         int captured_pawn_sq = m.to + (white_to_move ? -8 : 8);
         Piece captured_pawn = white_to_move ? BP : WP; // opponent's pawn
         set_piece(captured_pawn, captured_pawn_sq);
@@ -213,18 +208,18 @@ void Board::unmake_move(const Move& m)
 
 void load_pieces(Board& board) {
 
-    // Back rank piece order
+    // back rank piece order
     Piece back_rank[8] = { WR, WN, WB, WQ, WK, WB, WN, WR };
 
     for (int file = 0; file < 8; file++)
     {
-        // White back rank
+        // white back rank
         board.set_piece(back_rank[file], square_index(0, file));
-        // White pawns
+        // white pawns
         board.set_piece(WP, square_index(1, file));
-        // Black pawns
+        // black pawns
         board.set_piece(BP, square_index(6, file));
-        // Black back rank (same order, just different colour)
+        // black back rank (same order, just different colour)
         Piece black_piece = (Piece)(back_rank[file] + 6); // offset by 6 to get black equivalent
         board.set_piece(black_piece, square_index(7, file));
     }
@@ -232,7 +227,7 @@ void load_pieces(Board& board) {
 
 void Board::verify_state()
 {
-    // Check squares[] -> bitboards
+    // check squares[] -> bitboards
     for (int sq = 0; sq < 64; sq++)
     {
         Piece p = squares[sq];
@@ -244,7 +239,7 @@ void Board::verify_state()
         }
     }
     
-    // Check bitboards -> squares[] (NEW!)
+    // check bitboards -> squares[] (NEW!)
     for (int i = 1; i <= 12; i++)
     {
         uint64_t bb = pieces[i];

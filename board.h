@@ -17,7 +17,7 @@ struct Move;
 class Board
 {
   public:
-    // Individual bitboards
+    // individual bitboards
     uint64_t pieces[13]; // WP..BK
     uint64_t white_pieces;
     uint64_t black_pieces;

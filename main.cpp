@@ -13,6 +13,15 @@ int main()
 
     load_pieces(board);
 
+
+    //Perft Testing
+
+    // for (int d = 1; d <= 5; d++)
+    // {
+    //     uint64_t nodes = perft(board, d);
+    //     std::cout << "Depth " << d << ": " << nodes << "\n";
+    // }
+
     ChessGUI gui(board);
     gui.run();
 

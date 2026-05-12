@@ -10,13 +10,13 @@
 constexpr uint64_t FILE_A = 0x0101010101010101ULL;
 constexpr uint64_t FILE_H = 0x8080808080808080ULL;
 
-// Convert rank/file to square index
+// convert rank/file to square index
 constexpr int square_index(int rank, int file) { return rank * 8 + file; }
 
-// Bit manipulation helpers
+// bit manipulation helpers
 constexpr uint64_t set_bit(int sq) { return 1ULL << sq; }
 
-// Pop least significant bit and return its index, or -1 if zero.
+// pop least significant bit and return its index, or -1 if zero.
 inline int pop_lsb(uint64_t &bb)
 {
     if (!bb) return -1;
@@ -25,7 +25,6 @@ inline int pop_lsb(uint64_t &bb)
     return idx;
 }
 
-// Visualize a bitboard
 inline void print_bitboard(uint64_t bb)
 {
     for (int rank = 7; rank >= 0; rank--)
@@ -40,10 +39,10 @@ inline void print_bitboard(uint64_t bb)
     std::cout << '\n';
 }
 
-// Knight attacks lookup table
+// knight attacks lookup table
 inline uint64_t knight_attacks[64];
 
-// Precompute all knight moves
+// precompute all knight moves
 inline void init_knight_attacks()
 {
     for (int sq = 0; sq < 64; sq++)
@@ -73,9 +72,9 @@ inline uint64_t rook_attacks(int sq, uint64_t occupied)
     int rank = sq / 8;
     int file = sq % 8;
 
-    // Directions: N, S, E, W
+    // directions: N, S, E, W
 
-    // North (+ rank)
+    // north (+ rank)
     for (int r = rank + 1; r < 8; r++)
     {
         int s = r * 8 + file;
@@ -84,7 +83,7 @@ inline uint64_t rook_attacks(int sq, uint64_t occupied)
             break;
     }
 
-    // South (- rank)
+    // south (- rank)
     for (int r = rank - 1; r >= 0; r--)
     {
         int s = r * 8 + file;
@@ -93,7 +92,7 @@ inline uint64_t rook_attacks(int sq, uint64_t occupied)
             break;
     }
 
-    // East (+ file)
+    // east (+ file)
     for (int f = file + 1; f < 8; f++)
     {
         int s = rank * 8 + f;
@@ -102,7 +101,7 @@ inline uint64_t rook_attacks(int sq, uint64_t occupied)
             break;
     }
 
-    // West (- file)
+    // west (- file)
     for (int f = file - 1; f >= 0; f--)
     {
         int s = rank * 8 + f;
@@ -276,10 +275,8 @@ inline uint64_t pawn_moves(int sq, bool is_white, uint64_t occupied, uint64_t en
         }
     }
 
-    // Add captures (diagonal attacks, but only if enemy piece is there)
+
     uint64_t attacks = pawn_attacks(sq, is_white);
-    // For full accuracy, you'd check if the target square has an enemy piece.
-    // For now, include all diagonal squares as potential moves (refine later).
     moves |= (attacks & enemy_pieces);
 
     return moves;

@@ -9,14 +9,14 @@ int piece_values[13] = {
     300, // WB
     500, // WR
     900, // WQ
-    1000,   // WK
+    1000,// WK
     
     -100, // BP
     -300, // BN
     -300, // BB
     -500, // BR
     -900, // BQ
-    -1000     // BK
+    -1000 // BK
 };
 
 int pst[13][64] = {
@@ -80,7 +80,7 @@ int pst[13][64] = {
     -10,  0,  5,  0,  0,  0,  0,-10,
     -20,-10,-10, -5, -5,-10,-10,-20,
 
-    // white king middle game
+    // white king
     -30,-40,-40,-50,-50,-40,-40,-30,
     -30,-40,-40,-50,-50,-40,-40,-30,
     -30,-40,-40,-50,-50,-40,-40,-30,
@@ -141,7 +141,7 @@ int pst[13][64] = {
     -10,  0,  5,  0,  0,  0,  0,-10,
     -20,-10,-10, -5, -5,-10,-10,-20,
 
-    // king middle game
+    // king 
     -30,-40,-40,-50,-50,-40,-40,-30,
     -30,-40,-40,-50,-50,-40,-40,-30,
     -30,-40,-40,-50,-50,-40,-40,-30,
@@ -154,32 +154,27 @@ int pst[13][64] = {
 
 void init_pst()
 {
-    // Black pawn (flip and negate white pawn)
+    // black pieces (flip white pieces)
     for (int sq = 0; sq < 64; sq++) {
         pst[BP][sq] = -pst[WP][sq ^ 56];
     }
     
-    // Black knight (flip white knight)
     for (int sq = 0; sq < 64; sq++) {
         pst[BN][sq] = -pst[WN][sq ^ 56];
     }
     
-    // Black bishop (flip white bishop)
     for (int sq = 0; sq < 64; sq++) {
         pst[BB][sq] = -pst[WB][sq ^ 56];
     }
     
-    // Black rook (flip white rook)
     for (int sq = 0; sq < 64; sq++) {
         pst[BR][sq] = -pst[WR][sq ^ 56];
     }
     
-    // Black queen (flip white queen)
     for (int sq = 0; sq < 64; sq++) {
         pst[BQ][sq] = -pst[WQ][sq ^ 56];
     }
     
-    // Black king (flip white king)
     for (int sq = 0; sq < 64; sq++) {
         pst[BK][sq] = -pst[WK][sq ^ 56];
     }
@@ -230,16 +225,16 @@ int evaluate(const Board& board)
         while (pieces)
         {
             int sq = pop_lsb(pieces);
-            score += piece_values[i];  // Material score
-            score += pst[i][sq];       // Positional score
+            score += piece_values[i];  //material score
+            score += pst[i][sq];       //positional score
 
-            // Penalty for pieces on back rank (simple development bonus)
+            //penalty for pieces on back rank (development bonus)
             int rank = sq / 8;
-            if (i == WN || i == WB || i == WR) {  // Added WR
-                if (rank == 0) score -= 15;  // White pieces on rank 1
+            if (i == WN || i == WB || i == WR) { 
+                if (rank == 0) score -= 15;  //white pieces on rank 1
             }
-            if (i == BN || i == BB || i == BR) {  // Added BR
-                if (rank == 7) score += 15;  // Black pieces on rank 8
+            if (i == BN || i == BB || i == BR) {  
+                if (rank == 7) score += 15;  // black pieces on rank 8
             }
 
             //pushing pawns in endgame
@@ -431,11 +426,11 @@ int minimax_ab(Board& board, int depth, bool white_turn, int alpha, int beta)
 
 int quiescence(Board& board, int alpha, int beta, bool white_turn, int q_depth){
     
-    // Safety limit 
+    //safety limit 
     if (q_depth > 6)
         return evaluate(board);
     
-    // stand pat score
+    //stand pat score
     int stand_pat = evaluate(board);
 
     if (white_turn){

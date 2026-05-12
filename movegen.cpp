@@ -285,24 +285,24 @@ bool is_square_attacked_by(const Board &board, int target_sq, bool by_white)
         }
     }
 
-    // Check knights
+    // check knights
     uint64_t enemy_knights = by_white ? board.pieces[WN] : board.pieces[BN];
     if (knight_attacks[target_sq] & enemy_knights)
         return true;
 
-    // Check king
+    // check king
     uint64_t enemy_king = by_white ? board.pieces[WK] : board.pieces[BK];
     if (king_attacks[target_sq] & enemy_king)
         return true;
 
-    // Check rooks and queens
+    // check rooks and queens
     uint64_t rook_attackers = rook_attacks(target_sq, board.occupied);
     uint64_t enemy_rooks = by_white ? board.pieces[WR] : board.pieces[BR];
     uint64_t enemy_queens = by_white ? board.pieces[WQ] : board.pieces[BQ];
     if (rook_attackers & (enemy_rooks | enemy_queens))
         return true;
 
-    // Check bishops and queens
+    // check bishops and queens
     uint64_t bishop_attackers = bishop_attacks(target_sq, board.occupied);
     uint64_t enemy_bishops = by_white ? board.pieces[WB] : board.pieces[BB];
     if (bishop_attackers & (enemy_bishops | enemy_queens))
@@ -311,7 +311,7 @@ bool is_square_attacked_by(const Board &board, int target_sq, bool by_white)
     return false;
 }
 
-// Check if a king is in check
+// check if a king is in check
 bool is_in_check(const Board &board, bool is_white)
 {
     int king_sq = is_white ? board.white_king_sq : board.black_king_sq;
@@ -330,10 +330,8 @@ std::vector<Move> generate_moves(const Board &board)
 
     for (const Move &m : pseudolegal)
     {
-        // Make a copy of the board
         Board temp = board;
 
-        // Execute the move on the copy
         Move m_copy = m;
         m_copy.prev_en_passant_sq = board.en_passant_sq;
 
@@ -346,10 +344,6 @@ std::vector<Move> generate_moves(const Board &board)
 
         temp.make_move(m_copy);
 
-        // Check if the side that just moved has their king in check
-        // board.white_to_move tells us who was moving
-        // After make_move(), temp.white_to_move is the opposite
-        // So we check if board.white_to_move's king is safe on the modified board
         if (!is_in_check(temp, board.white_to_move))
         {
             legal.push_back(m_copy);
@@ -357,4 +351,22 @@ std::vector<Move> generate_moves(const Board &board)
     }
 
     return legal;
+}
+
+uint64_t perft(Board& board, int depth)
+{
+    if (depth == 0)
+        return 1;
+
+    auto moves = generate_moves(board);
+    uint64_t nodes = 0;
+
+    for (const Move& m : moves)
+    {
+        board.make_move(m);
+        nodes += perft(board, depth - 1);
+        board.unmake_move(m);
+    }
+
+    return nodes;
 }

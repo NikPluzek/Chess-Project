@@ -54,7 +54,6 @@ struct Button {
 
 ChessGUI::ChessGUI(Board& b) : board(b)
 {
-    //window.create(sf::VideoMode(tileSize * 8, tileSize * 8), "Chess", sf::Style::Default);
     window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chess Game");
 
     current_state = MENU;
@@ -177,6 +176,7 @@ void ChessGUI::run()
                                         auto end = std::chrono::high_resolution_clock::now();
                                         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
                                         std::cout << "Engine move time: " << duration.count() << " ms" << std::endl;
+                                        // move times printed
 
 
                                         board.make_move(engine_move);
@@ -208,7 +208,7 @@ void ChessGUI::run()
             }
         }
 
-        // Draw
+        // draw/render 
         window.clear(sf::Color::White);
 
         if(current_state == MENU){
@@ -241,7 +241,7 @@ void ChessGUI::draw_board()
             sf::RectangleShape square(sf::Vector2f(tileSize, tileSize));
             square.setPosition(file * tileSize, (7 - rank) * tileSize);
             bool dark = (rank + file) % 2;
-            square.setFillColor(dark ? sf::Color(118, 150, 86) : sf::Color(238, 238, 210));
+            square.setFillColor(dark ? sf::Color(238, 238, 210) : sf::Color(118, 150, 86));
             window.draw(square);
         }
     }
@@ -287,7 +287,7 @@ void ChessGUI::draw_highlights()
         window.draw(moveHighlight);
     }
 
-    // grey circles for moves
+    //grey circles for moves
     sf::CircleShape highlight(tileSize / 2 - 20);
     highlight.setFillColor(sf::Color(100, 100, 200, 100));
 
@@ -302,7 +302,7 @@ void ChessGUI::draw_highlights()
         }
     }
 
-    // red squares for attacks
+    //red squares for attacks
     sf::RectangleShape attackHighlight(sf::Vector2f(tileSize, tileSize));
     attackHighlight.setFillColor(sf::Color(155, 0, 0, 255));
 
@@ -473,18 +473,15 @@ void ChessGUI::draw_game_over()
 
 void ChessGUI::render_menu()
 {
-    // Background gradient effect (two rectangles)
-    sf::RectangleShape bg1(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT / 2));
+    //background gradient effect (two rectangles)
+    sf::RectangleShape bg1(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
     bg1.setPosition(0, 0);
     bg1.setFillColor(sf::Color(240, 240, 240));
     window.draw(bg1);
     
-    sf::RectangleShape bg2(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT / 2));
-    bg2.setPosition(0, WINDOW_HEIGHT / 2);
-    bg2.setFillColor(sf::Color(220, 220, 220));
-    window.draw(bg2);
+   
     
-    // Title
+    //title
     sf::Text title;
     title.setFont(font);
     title.setString("Chess");
@@ -496,7 +493,7 @@ void ChessGUI::render_menu()
     title.setPosition(WINDOW_WIDTH / 2, 120);
     window.draw(title);
     
-    // Subtitle
+    //subtitle
     sf::Text subtitle;
     subtitle.setFont(font);
     subtitle.setString("AI Chess Engine By Nikodem Pluzek");
@@ -507,10 +504,10 @@ void ChessGUI::render_menu()
     subtitle.setPosition(WINDOW_WIDTH / 2, 190);
     window.draw(subtitle);
     
-    // New Game button
-    Button newGame("Jub is a baka! ^_^", sf::Vector2f(170, 300), sf::Vector2f(300, 70), font);
+    //new game button
+    Button newGame("Play Game", sf::Vector2f(220, 300), sf::Vector2f(200, 70), font);
     
-    // Get mouse position for hover effect
+    //get mouse position for hover effect
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     newGame.setHovered(newGame.contains(mousePos.x, mousePos.y));
     
@@ -523,12 +520,12 @@ void ChessGUI::handle_menu_click(int mouse_x, int mouse_y){
 
 void ChessGUI::render_side_selection()
 {
-    // Background
+    //background
     sf::RectangleShape bg(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
     bg.setFillColor(sf::Color(230, 230, 230));
     window.draw(bg);
     
-    // Title
+    //title
     sf::Text title;
     title.setFont(font);
     title.setString("Choose Your Colour");
@@ -540,22 +537,22 @@ void ChessGUI::render_side_selection()
     title.setPosition(WINDOW_WIDTH / 2, 80);
     window.draw(title);
     
-    // White button (left side)
-    Button whiteBtn("Play as White", sf::Vector2f(60, 250), sf::Vector2f(240, 250), font);
+    //white button (left side)
+    Button whiteBtn("Play as White", sf::Vector2f(60, 250), sf::Vector2f(250, 250), font);
     
-    // Black button (right side)  
-    Button blackBtn("Play as Black", sf::Vector2f(340, 250), sf::Vector2f(240, 250), font);
+    //black button (right side)  
+    Button blackBtn("Play as Black", sf::Vector2f(340, 250), sf::Vector2f(250, 250), font);
     
-    // Hover effects
+    //hover effects
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     whiteBtn.setHovered(whiteBtn.contains(mousePos.x, mousePos.y));
     blackBtn.setHovered(blackBtn.contains(mousePos.x, mousePos.y));
     
-    // Draw buttons
+    //draw buttons
     whiteBtn.draw(window);
     blackBtn.draw(window);
     
-    // Draw piece icons on buttons (optional - adds visual appeal)
+    //draw piece icons on buttons 
     if (textures[WK].getSize().x > 0)
     {
         sf::Sprite whiteKing(textures[WK]);
@@ -570,7 +567,7 @@ void ChessGUI::render_side_selection()
 
 void ChessGUI::handle_side_selection_click(int mouse_x, int mouse_y)
 {
-    // Left half = white, right half = black
+    //left half = white, right half = black
     if (mouse_x < WINDOW_WIDTH / 2)
     {
         player_is_white = true;
